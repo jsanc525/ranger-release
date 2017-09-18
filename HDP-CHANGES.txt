@@ -181,3 +181,4 @@ Changes only in Hortonworks github and not in Ranger 0.7.0 Apache Release
 [RANGER-2166] : A ClassNotFound exception is thrown with atlasrest as a tag source
 [RANGER-2297] : : getContentSummary validation failure
 [RANGER-2191] : : Update ranger-tool with new options to control Trie
+[RANGER-1731] : : Add jettison jar to the security-admin module
