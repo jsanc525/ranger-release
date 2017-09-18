@@ -103,3 +103,4 @@ Changes only in Hortonworks github and not in Ranger 0.7.0 Apache Release
 [RANGER-1383] : Use resource matchers for filtering service policies
 [RANGER-1731] : Exclude old guava versions, which could cause build problems, especially with owasp-java-html-sanitizer, which declares the deps as a range: [11.0,) Guava is already included in the admin module
 [RANGER-1905] : : Fix assembly creation - it's a black magic. As ranger-plugins-audit doesn't exclude guava from hadoop common, an older guava is leaked into embeddedwebserver classpath, which somehow filtered out
+[RANGER-1731] : : Add jettison jar to the security-admin module
