@@ -63,3 +63,4 @@ Changes only in Hortonworks github and not in Ranger 0.7.0 Apache Release
 [RANGER-1414] : RangerHiveAuthorizer.applyRowFilterAndColumnMasking should only return tables if they need masking/filtering
 [RANGER-1383] : Use resource matchers for filtering service policies
 
+[RANGER-1731] : Exclude old guava versions, which could cause build problems, especially with owasp-java-html-sanitizer, which declares the deps as a range: [11.0,) Guava is already included in the admin module
