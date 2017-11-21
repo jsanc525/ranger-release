@@ -164,3 +164,4 @@ Changes only in Hortonworks github and not in Ranger 0.7.0 Apache Release
 [RANGER-1880] : TagSync update to process TRAIT_UPDATE notification from Atlas
 [RANGER-1883] : TagSync should reuse kerberos ticket in REST calls to Ranger Admin
 [RANGER-1897] : tagsync update to replace Atlas V1 API usage with Atlas V2 API for tag-download using REST
+[RANGER-1905] : : Fix assembly creation - it's a black magic. As ranger-plugins-audit doesn't exclude guava from hadoop common, an older guava is leaked into embeddedwebserver classpath, which somehow filtered out
