@@ -176,3 +176,4 @@ Changes only in Hortonworks github and not in Ranger 0.7.0 Apache Release
 [RANGER-2008] : Policy evaluation is failing for multiline policy conditions.
 [RANGER-1731] : : Add jettison jar to the security-admin module
 [RANGER-2372] : : Remove non-existing URL entries from spring config file
+[RANGER-2010] : Ranger Tagsync should use cookie based authentication for subsequent requests to Ranger admin
