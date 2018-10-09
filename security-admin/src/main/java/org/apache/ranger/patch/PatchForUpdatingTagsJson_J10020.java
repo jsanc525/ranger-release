@@ -129,6 +129,7 @@ public class PatchForUpdatingTagsJson_J10020 extends BaseLoader {
             updateRangerTagsTablesWithTagsJson();
         } catch (Exception e) {
             logger.error("Error while UpdateRangerTagsTablesWithTagsJson()", e);
+            System.exit(1);
         }
 
         logger.info("<== PatchForUpdatingTagsJson.execLoad()");
@@ -209,7 +210,7 @@ public class PatchForUpdatingTagsJson_J10020 extends BaseLoader {
         private       Map<Long, RangerTagDef>          tagDefs;
         private       Map<Long, RangerTag>             tags;
 
-        RangerTagDBRetriever(final RangerDaoManager daoMgr, final PlatformTransactionManager txManager, final XXService xService) {
+        RangerTagDBRetriever(final RangerDaoManager daoMgr, final PlatformTransactionManager txManager, final XXService xService) throws InterruptedException {
             this.daoMgr      = daoMgr;
             this.xService    = xService;
             this.lookupCache = new RangerTagDBRetriever.LookupCache();
@@ -239,12 +240,7 @@ public class PatchForUpdatingTagsJson_J10020 extends BaseLoader {
                     RangerTagDBRetriever.TagLoaderThread t = new RangerTagDBRetriever.TagLoaderThread(txTemplate, xService);
                     t.setDaemon(true);
                     t.start();
-
-                    try {
-                        t.join();
-                    } catch (InterruptedException ie) {
-                        LOG.error("Failed to get Tags in a separate thread and using a new transaction", ie);
-                    }
+                    t.join();
                 }
 
             }
@@ -264,24 +260,15 @@ public class PatchForUpdatingTagsJson_J10020 extends BaseLoader {
 
         private boolean initializeTagCache(XXService xService) {
             boolean ret;
-            try {
-                RangerTagDBRetriever.TagRetrieverServiceResourceContext serviceResourceContext  = new RangerTagDBRetriever.TagRetrieverServiceResourceContext(xService);
-                RangerTagDBRetriever.TagRetrieverTagDefContext          tagDefContext           = new RangerTagDBRetriever.TagRetrieverTagDefContext(xService);
-                RangerTagDBRetriever.TagRetrieverTagContext             tagContext              = new RangerTagDBRetriever.TagRetrieverTagContext(xService);
+            RangerTagDBRetriever.TagRetrieverServiceResourceContext serviceResourceContext  = new RangerTagDBRetriever.TagRetrieverServiceResourceContext(xService);
+            RangerTagDBRetriever.TagRetrieverTagDefContext          tagDefContext           = new RangerTagDBRetriever.TagRetrieverTagDefContext(xService);
+            RangerTagDBRetriever.TagRetrieverTagContext             tagContext              = new RangerTagDBRetriever.TagRetrieverTagContext(xService);
 
-                serviceResources = serviceResourceContext.getAllServiceResources();
-                tagDefs          = tagDefContext.getAllTagDefs();
-                tags             = tagContext.getAllTags();
+            serviceResources = serviceResourceContext.getAllServiceResources();
+            tagDefs          = tagDefContext.getAllTagDefs();
+            tags             = tagContext.getAllTags();
 
-                ret = true;
-            } catch (Exception ex) {
-                LOG.error("Failed to get tags for service:[" + xService.getName() + "]", ex);
-                serviceResources = null;
-                tagDefs          = null;
-                tags             = null;
-
-                ret = false;
-            }
+            ret = true;
             return ret;
         }
 
@@ -365,27 +352,22 @@ public class PatchForUpdatingTagsJson_J10020 extends BaseLoader {
 
             @Override
             public void run() {
-                try {
-                    txTemplate.setReadOnly(true);
-                    Boolean result = txTemplate.execute(new TransactionCallback<Boolean>() {
-                        @Override
-                        public Boolean doInTransaction(TransactionStatus status) {
-                            boolean ret = initializeTagCache(xService);
+                txTemplate.setReadOnly(true);
+                Boolean result = txTemplate.execute(new TransactionCallback<Boolean>() {
+                    @Override
+                    public Boolean doInTransaction(TransactionStatus status) {
+                        boolean ret = initializeTagCache(xService);
 
-                            if (!ret) {
-                                status.setRollbackOnly();
-                                LOG.error("Failed to get tags for service:[" + xService.getName() + "] in a new transaction");
-                            }
-
-                            return ret;
+                        if (!ret) {
+                            status.setRollbackOnly();
+                            LOG.error("Failed to get tags for service:[" + xService.getName() + "] in a new transaction");
                         }
-                    });
-
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("transaction result:[" + result +"]");
+                        return ret;
                     }
-                } catch (Throwable ex) {
-                    LOG.error("Failed to get tags for service:[" + xService.getName() + "] in a new transaction", ex);
+                });
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("transaction result:[" + result +"]");
                 }
             }
         }

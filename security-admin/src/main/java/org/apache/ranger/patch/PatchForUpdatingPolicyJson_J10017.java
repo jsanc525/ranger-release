@@ -156,6 +156,7 @@ public class PatchForUpdatingPolicyJson_J10017 extends BaseLoader {
 			updateRangerPolicyTableWithPolicyJson();
 		} catch (Exception e) {
 			logger.error("Error while updateRangerPolicyTableWithPolicyJson()", e);
+			System.exit(1);
 		}
 
 		logger.info("<== PatchForUpdatingPolicyJson.execLoad()");
@@ -526,31 +527,18 @@ public class PatchForUpdatingPolicyJson_J10017 extends BaseLoader {
 
 			@Override
 			public void run() {
-				try {
-					txTemplate.setReadOnly(true);
-
-					policies = txTemplate.execute(new TransactionCallback<List<RangerPolicy>>() {
-						@Override
-						public List<RangerPolicy> doInTransaction(TransactionStatus status) {
-							try {
-								RetrieverContext ctx = new RetrieverContext(xService);
-								return ctx.getAllPolicies();
-							} catch (Exception ex) {
-								LOG.error("RangerPolicyRetriever.getServicePolicies(): Failed to get policies for service:[" + xService.getName() + "] in a new transaction", ex);
-
-								status.setRollbackOnly();
-
-								return null;
-							}
-						}
-					});
-				} catch (Throwable ex) {
-					LOG.error("RangerPolicyRetriever.getServicePolicies(): Failed to get policies for service:[" + xService.getName() + "] in a new transaction", ex);
-				}
+				txTemplate.setReadOnly(true);
+				policies = txTemplate.execute(new TransactionCallback<List<RangerPolicy>>() {
+					@Override
+					public List<RangerPolicy> doInTransaction(TransactionStatus status) {
+						RetrieverContext ctx = new RetrieverContext(xService);
+						return ctx.getAllPolicies();
+					}
+				});
 			}
 		}
 
-		public List<RangerPolicy> getServicePolicies(final XXService xService) {
+		public List<RangerPolicy> getServicePolicies(final XXService xService) throws InterruptedException {
 			String serviceName = xService == null ? null : xService.getName();
 			Long   serviceId   = xService == null ? null : xService.getId();
 
@@ -580,15 +568,9 @@ public class PatchForUpdatingPolicyJson_J10017 extends BaseLoader {
 					}
 
 					PolicyLoaderThread t = new PolicyLoaderThread(txTemplate, xService);
-
 					t.start();
-
-					try {
-						t.join();
-						ret = t.getPolicies();
-					} catch (InterruptedException ie) {
-						LOG.error("Failed to retrieve policies in a new, read-only thread.", ie);
-					}
+					t.join();
+					ret = t.getPolicies();
 				}
 			} else {
 				if (LOG.isDebugEnabled()) {
