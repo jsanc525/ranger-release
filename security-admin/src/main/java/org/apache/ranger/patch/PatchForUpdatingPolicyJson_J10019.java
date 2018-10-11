@@ -100,8 +100,8 @@ import org.springframework.transaction.support.TransactionTemplate;
  *
  */
 @Component
-public class PatchForUpdatingPolicyJson_J10017 extends BaseLoader {
-	private static final Logger logger = Logger.getLogger(PatchForUpdatingPolicyJson_J10017.class);
+public class PatchForUpdatingPolicyJson_J10019 extends BaseLoader {
+	private static final Logger logger = Logger.getLogger(PatchForUpdatingPolicyJson_J10019.class);
 
 	@Autowired
 	RangerDaoManager daoMgr;
@@ -126,7 +126,7 @@ public class PatchForUpdatingPolicyJson_J10017 extends BaseLoader {
 	public static void main(String[] args) {
 		logger.info("main()");
 		try {
-			PatchForUpdatingPolicyJson_J10017 loader = (PatchForUpdatingPolicyJson_J10017) CLIUtil.getBean(PatchForUpdatingPolicyJson_J10017.class);
+			PatchForUpdatingPolicyJson_J10019 loader = (PatchForUpdatingPolicyJson_J10019) CLIUtil.getBean(PatchForUpdatingPolicyJson_J10019.class);
 
 			loader.init();
 
