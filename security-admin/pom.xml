@@ -665,7 +665,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>prepare-package</phase>
+                        <phase>process-resources</phase>
                         <id>install node and npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
@@ -676,7 +676,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>prepare-package</phase>
+                        <phase>process-resources</phase>
                         <id>npm install</id>
                         <goals>
                             <goal>npm</goal>
@@ -693,6 +693,29 @@
                         </goals>
                         <configuration>
                             <arguments>run r.js -- -o ${project.build.finalName}/minify.build.js</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>test</phase>
+                        <id>karma dev</id>
+                        <goals>
+                            <goal>karma</goal>
+                        </goals>
+                        <configuration>
+                            <karmaConfPath>../src/test/javascript/karma-dev.conf.js</karmaConfPath>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>verify</phase>
+                        <id>karma prd</id>
+                        <goals>
+                            <goal>karma</goal>
+                        </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <buildDir>${project.build.finalName}</buildDir>
+                            </environmentVariables>
+                            <karmaConfPath>../src/test/javascript/karma-prd.conf.js</karmaConfPath>
                         </configuration>
                     </execution>
                 </executions>
