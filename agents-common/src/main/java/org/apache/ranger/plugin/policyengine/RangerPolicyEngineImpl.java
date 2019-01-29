@@ -1263,7 +1263,7 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 		}
 
 		RangerAccessResult ret = createAccessResult(request, policyType);
-		Date accessTime = request.getAccessTime();
+		Date accessTime = request.getAccessTime() != null ? request.getAccessTime() : new Date();
 
         if (ret != null && request != null) {
 
@@ -1351,7 +1351,7 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 			LOG.debug("==> RangerPolicyEngineImpl.evaluateTagPolicies(" + request + ", policyType =" + policyType + ", zoneName=" + zoneName + ", " + result + ")");
 		}
 
-		Date accessTime = request.getAccessTime();
+		Date accessTime = request.getAccessTime() != null ? request.getAccessTime() : new Date();
 
 		Set<RangerTagForEval> tags = RangerAccessRequestUtil.getRequestTagsFromContext(request.getContext());
 
