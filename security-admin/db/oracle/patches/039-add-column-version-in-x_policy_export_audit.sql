@@ -12,25 +12,12 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-
-DROP TABLE IF EXISTS x_policy_change_log;
-DROP SEQUENCE IF EXISTS x_policy_change_log_seq;
-
-CREATE SEQUENCE x_policy_change_log_seq;
-
-CREATE TABLE x_policy_change_log (
-id BIGINT DEFAULT nextval('x_policy_change_log_seq'::regclass),
-create_time TIMESTAMP DEFAULT NULL NULL,
-service_id bigint NOT NULL,
-change_type int NOT NULL,
-policy_version bigint DEFAULT '0' NOT NULL,
-service_type varchar(256) DEFAULT NULL NULL,
-policy_type int DEFAULT NULL NULL,
-zone_name varchar(256) DEFAULT NULL NULL,
-policy_id bigint DEFAULT NULL NULL,
-primary key (id)
-);
-commit;
-CREATE INDEX x_policy_change_log_IDX_service_id ON x_policy_change_log(service_id);
-CREATE INDEX x_policy_change_log_IDX_policy_version ON x_policy_change_log(policy_version);
-commit;
+DECLARE
+        v_count number:=0;
+BEGIN
+        select count(*) into v_count from user_tab_cols where table_name='X_POLICY_EXPORT_AUDIT' and column_name='policy_version';
+        if (v_count = 0) then
+                execute immediate 'ALTER TABLE x_policy_export_audit ADD policy_version NUMBER(20) DEFAULT NULL NULL';
+        end if;
+        commit;
+END;/

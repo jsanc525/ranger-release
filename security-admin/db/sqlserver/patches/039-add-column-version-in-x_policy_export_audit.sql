@@ -13,24 +13,11 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-DROP TABLE IF EXISTS x_policy_change_log;
-DROP SEQUENCE IF EXISTS x_policy_change_log_seq;
+GO
+IF NOT EXISTS(select * from INFORMATION_SCHEMA.columns where table_name = 'x_policy_export_audit' and column_name = 'policy_version')
+BEGIN
+	ALTER TABLE [dbo].[x_policy_export_audit] ADD [policy_version] [bigint] DEFAULT NULL NULL;
+END
+GO
 
-CREATE SEQUENCE x_policy_change_log_seq;
-
-CREATE TABLE x_policy_change_log (
-id BIGINT DEFAULT nextval('x_policy_change_log_seq'::regclass),
-create_time TIMESTAMP DEFAULT NULL NULL,
-service_id bigint NOT NULL,
-change_type int NOT NULL,
-policy_version bigint DEFAULT '0' NOT NULL,
-service_type varchar(256) DEFAULT NULL NULL,
-policy_type int DEFAULT NULL NULL,
-zone_name varchar(256) DEFAULT NULL NULL,
-policy_id bigint DEFAULT NULL NULL,
-primary key (id)
-);
-commit;
-CREATE INDEX x_policy_change_log_IDX_service_id ON x_policy_change_log(service_id);
-CREATE INDEX x_policy_change_log_IDX_policy_version ON x_policy_change_log(policy_version);
-commit;
+exit
