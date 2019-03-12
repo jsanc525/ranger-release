@@ -85,7 +85,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 		clusterName       				= RangerConfiguration.getInstance().get(propertyPrefix + ".ambari.cluster.name", "");
 		int	 restClientConnTimeOutMs	= RangerConfiguration.getInstance().getInt(propertyPrefix + ".policy.rest.client.connection.timeoutMs", 120 * 1000);
 		int	 restClientReadTimeOutMs	= RangerConfiguration.getInstance().getInt(propertyPrefix + ".policy.rest.client.read.timeoutMs", 30 * 1000);
-		supportsPolicyDeltas            = RangerConfiguration.getInstance().get(propertyPrefix + ".policy.rest.supports.policy.deltas", "false");
+		supportsPolicyDeltas            = RangerConfiguration.getInstance().get(propertyPrefix + ".policy.rest.supports.policy.deltas", "true");
 
         if (!StringUtil.isEmpty(tmpUrl)) {
             url = tmpUrl.trim();
