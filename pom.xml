@@ -198,7 +198,7 @@
         <mockito.version>2.7.22</mockito.version>
         <mysql-connector-java.version>5.1.31</mysql-connector-java.version>
         <netty.version>3.10.5.Final</netty.version>
-        <noggit.version>0.6</noggit.version>
+        <noggit.version>0.8</noggit.version>
         <owasp-java-html-sanitizer.version>r239</owasp-java-html-sanitizer.version>
         <paranamer.version>2.3</paranamer.version>
         <poi.version>3.17</poi.version>
@@ -210,7 +210,7 @@
         <security-agent-install-dir>hadoop-security/plugins</security-agent-install-dir>
         <servlet.api.version>2.5</servlet.api.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
-        <solr.version>6.6.1</solr.version>
+        <solr.version>7.7.1</solr.version>
         <sun-jersey-client.version>1.19</sun-jersey-client.version>
         <spring-ldap-core.version>2.3.2.RELEASE</spring-ldap-core.version>
         <springframework.security.version>4.2.7.RELEASE</springframework.security.version>
