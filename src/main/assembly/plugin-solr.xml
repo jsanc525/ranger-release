@@ -50,7 +50,7 @@
 							<include>com.google.guava:guava:jar:${google.guava.version}</include>
 							<include>org.codehaus.jackson:jackson-core-asl</include>
 							<include>org.codehaus.jackson:jackson-jaxrs</include>
-							<include>org.codehaus.jackson:jackson-mapper-asl</include>
+							<include>org.codehaus.jackson:jackson-mapper-asl:jar:${codehaus.jackson.version}</include>
 							<include>org.codehaus.jackson:jackson-xc</include>
 							<include>org.apache.htrace:htrace-core4:jar:${htrace-core.version}</include>
 							<include>com.fasterxml.woodstox:woodstox-core:jar:${fasterxml.woodstox.version}</include>
