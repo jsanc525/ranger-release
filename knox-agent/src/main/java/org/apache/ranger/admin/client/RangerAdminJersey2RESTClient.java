@@ -82,7 +82,7 @@ public class RangerAdminJersey2RESTClient implements RangerAdminClient {
 		_restClientConnTimeOutMs = RangerConfiguration.getInstance().getInt(configPropertyPrefix + ".policy.rest.client.connection.timeoutMs", 120 * 1000);
 		_restClientReadTimeOutMs = RangerConfiguration.getInstance().getInt(configPropertyPrefix + ".policy.rest.client.read.timeoutMs", 30 * 1000);
 		_clusterName = RangerConfiguration.getInstance().get(configPropertyPrefix + ".ambari.cluster.name", "");
-		_supportsPolicyDeltas = RangerConfiguration.getInstance().get(configPropertyPrefix + ".policy.rest.supports.policy.deltas", "true");
+		_supportsPolicyDeltas = RangerConfiguration.getInstance().get(configPropertyPrefix + ".policy.rest.supports.policy.deltas", "false");
 		if (!"true".equalsIgnoreCase(_supportsPolicyDeltas)) {
 			_supportsPolicyDeltas = "false";
 		}
