@@ -38,8 +38,10 @@ import org.apache.ranger.plugin.util.RangerRESTUtils;
 import org.apache.ranger.plugin.util.RangerServiceNotFoundException;
 import org.apache.ranger.plugin.util.ServicePolicies;
 import org.apache.ranger.plugin.util.ServiceTags;
+import org.apache.ranger.plugin.util.URLEncoderUtil;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.PrivilegedAction;
@@ -49,6 +51,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 	private static final Log LOG = LogFactory.getLog(RangerAdminRESTClient.class);
 
 	private String           serviceName;
+    private String           serviceNameUrlParam;
 	private String           pluginId;
 	private String clusterName;
 	private RangerRESTClient restClient;
@@ -98,6 +101,13 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 		}
 
 		init(url, sslConfigFileName, restClientConnTimeOutMs , restClientReadTimeOutMs);
+
+        try {
+            this.serviceNameUrlParam = URLEncoderUtil.encodeURIParam(serviceName);
+        } catch (UnsupportedEncodingException e) {
+            LOG.warn("Unsupported encoding, serviceName=" + serviceName);
+            this.serviceNameUrlParam = serviceName;
+        }
 	}
 
 	@Override
@@ -118,7 +128,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 			}
 			PrivilegedAction<ClientResponse> action = new PrivilegedAction<ClientResponse>() {
 				public ClientResponse run() {
-					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_POLICY_GET_FOR_SECURE_SERVICE_IF_UPDATED + serviceName)
+					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_POLICY_GET_FOR_SECURE_SERVICE_IF_UPDATED + serviceNameUrlParam)
 							.queryParam(RangerRESTUtils.REST_PARAM_LAST_KNOWN_POLICY_VERSION, Long.toString(lastKnownVersion))
 							.queryParam(RangerRESTUtils.REST_PARAM_LAST_ACTIVATION_TIME, Long.toString(lastActivationTimeInMillis))
 							.queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId)
@@ -132,7 +142,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Checking Service policy if updated with old api call");
 			}
-			WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_POLICY_GET_FOR_SERVICE_IF_UPDATED + serviceName)
+			WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_POLICY_GET_FOR_SERVICE_IF_UPDATED + serviceNameUrlParam)
 					.queryParam(RangerRESTUtils.REST_PARAM_LAST_KNOWN_POLICY_VERSION, Long.toString(lastKnownVersion))
 					.queryParam(RangerRESTUtils.REST_PARAM_LAST_ACTIVATION_TIME, Long.toString(lastActivationTimeInMillis))
 					.queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId)
@@ -190,7 +200,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 		if (isSecureMode) {
 			PrivilegedAction<ClientResponse> action = new PrivilegedAction<ClientResponse>() {
 				public ClientResponse run() {
-					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_SECURE_SERVICE_GRANT_ACCESS + serviceName)
+					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_SECURE_SERVICE_GRANT_ACCESS + serviceNameUrlParam)
 							.queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId);
 					return secureWebResource.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).type(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).post(ClientResponse.class, restClient.toJson(request));
 				}
@@ -200,7 +210,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 			}
 			response = user.doAs(action);
 		} else {
-			WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_SERVICE_GRANT_ACCESS + serviceName)
+			WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_SERVICE_GRANT_ACCESS + serviceNameUrlParam)
                                                                                 .queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId);
 			response = webResource.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).type(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).post(ClientResponse.class, restClient.toJson(request));
 		}
@@ -235,7 +245,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 		if (isSecureMode) {
 			PrivilegedAction<ClientResponse> action = new PrivilegedAction<ClientResponse>() {
 				public ClientResponse run() {
-					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_SECURE_SERVICE_REVOKE_ACCESS + serviceName)
+					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_SECURE_SERVICE_REVOKE_ACCESS + serviceNameUrlParam)
 							.queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId);
 					return secureWebResource.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).type(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).post(ClientResponse.class, restClient.toJson(request));
 				}
@@ -245,7 +255,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 			}
 			response = user.doAs(action);
 		} else {
-			WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_SERVICE_REVOKE_ACCESS + serviceName)
+			WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_SERVICE_REVOKE_ACCESS + serviceNameUrlParam)
                                                                                 .queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId);
 			response = webResource.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).type(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).post(ClientResponse.class, restClient.toJson(request));
 		}
@@ -303,7 +313,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 		if (isSecureMode) {
 			PrivilegedAction<ClientResponse> action = new PrivilegedAction<ClientResponse>() {
 				public ClientResponse run() {
-					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_GET_SECURE_SERVICE_TAGS_IF_UPDATED + serviceName)
+					WebResource secureWebResource = createWebResource(RangerRESTUtils.REST_URL_GET_SECURE_SERVICE_TAGS_IF_UPDATED + serviceNameUrlParam)
 							.queryParam(RangerRESTUtils.LAST_KNOWN_TAG_VERSION_PARAM, Long.toString(lastKnownVersion))
 							.queryParam(RangerRESTUtils.REST_PARAM_LAST_ACTIVATION_TIME, Long.toString(lastActivationTimeInMillis))
 							.queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId);
@@ -315,7 +325,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 			}
 			response = user.doAs(action);
 		} else {
-			webResource = createWebResource(RangerRESTUtils.REST_URL_GET_SERVICE_TAGS_IF_UPDATED + serviceName)
+			webResource = createWebResource(RangerRESTUtils.REST_URL_GET_SERVICE_TAGS_IF_UPDATED + serviceNameUrlParam)
 					.queryParam(RangerRESTUtils.LAST_KNOWN_TAG_VERSION_PARAM, Long.toString(lastKnownVersion))
 					.queryParam(RangerRESTUtils.REST_PARAM_LAST_ACTIVATION_TIME, Long.toString(lastActivationTimeInMillis))
 					.queryParam(RangerRESTUtils.REST_PARAM_PLUGIN_ID, pluginId);
@@ -372,7 +382,7 @@ public class RangerAdminRESTClient implements RangerAdminClient {
 		boolean isSecureMode = user != null && UserGroupInformation.isSecurityEnabled();
 
 		final WebResource webResource = createWebResource(RangerRESTUtils.REST_URL_LOOKUP_TAG_NAMES)
-				.queryParam(RangerRESTUtils.SERVICE_NAME_PARAM, serviceName)
+				.queryParam(RangerRESTUtils.SERVICE_NAME_PARAM, serviceNameUrlParam)
 				.queryParam(RangerRESTUtils.PATTERN_PARAM, pattern);
 
 		ClientResponse response = null;
