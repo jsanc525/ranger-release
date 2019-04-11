@@ -203,7 +203,8 @@
 				"read",
 				"write",
 				"repladmin",
-				"serviceadmin"
+				"serviceadmin",
+				"refresh"
 			]
 		},
 
@@ -235,6 +236,12 @@
 			"itemId": 13,
 			"name": "tempudfadmin",
 			"label": "Temporary UDF Admin"
+		},
+
+		{
+			"itemId": 14,
+			"name": "refresh",
+			"label": "Refresh"
 		}
 	],
 
