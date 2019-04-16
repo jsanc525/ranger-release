@@ -54,7 +54,7 @@
                     <include>org.mortbay.jetty:jetty-util</include>
                     <include>commons-collections:commons-collections</include>
                     <include>commons-lang:commons-lang</include>
-                    <include>org.apache.zookeeper:zookeeper</include>
+                    <include>org.apache.zookeeper:zookeeper:jar:${zookeeper.version}</include>
                     <include>org.apache.curator:curator-framework</include>                    
                     <include>org.apache.curator:curator-client</include>
                     <include>org.apache.curator:curator-test</include>
