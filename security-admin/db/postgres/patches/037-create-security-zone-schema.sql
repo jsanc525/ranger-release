@@ -21,10 +21,41 @@ CREATE OR REPLACE FUNCTION getModulesIdByName(input_val varchar(100))
 RETURNS bigint LANGUAGE SQL AS $$ SELECT x_modules_master.id FROM x_modules_master
 WHERE x_modules_master.module = $1; $$;
 
-INSERT INTO x_modules_master(create_time,update_time,added_by_id,upd_by_id,module,url) VALUES(current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Security Zone','');
-INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (getXportalUIdByLoginId('admin'),getModulesIdByName('Security Zone'),current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),1);
-INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (getXportalUIdByLoginId('rangerusersync'),getModulesIdByName('Security Zone'),current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),1);
-INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (getXportalUIdByLoginId('rangertagsync'),getModulesIdByName('Security Zone'),current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),1);
+select 'delimiter start';
+CREATE OR REPLACE FUNCTION add_security_zone_permissions()
+RETURNS void AS $$
+DECLARE
+ v_column_exists integer := 0;
+BEGIN
+ select count(*) into v_column_exists from x_modules_master where module='Security Zone';
+ IF v_column_exists = 0 THEN
+ 	INSERT INTO x_modules_master(create_time,update_time,added_by_id,upd_by_id,module,url) VALUES(current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Security Zone','');
+ END IF;
+
+ v_column_exists:=0;
+ select count(*) into v_column_exists from x_user_module_perm where user_id=getXportalUIdByLoginId('admin') and module_id=getModulesIdByName('Security Zone');
+ IF v_column_exists = 0 THEN
+ 	INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (getXportalUIdByLoginId('admin'),getModulesIdByName('Security Zone'),current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),1);
+ END IF;
+
+ v_column_exists:=0;
+ select count(*) into v_column_exists from x_user_module_perm where user_id=getXportalUIdByLoginId('rangerusersync') and module_id=getModulesIdByName('Security Zone');
+ IF v_column_exists = 0 THEN
+ 	INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (getXportalUIdByLoginId('rangerusersync'),getModulesIdByName('Security Zone'),current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),1);
+ END IF;
+
+ v_column_exists:=0;
+ select count(*) into v_column_exists from x_user_module_perm where user_id=getXportalUIdByLoginId('rangertagsync') and module_id=getModulesIdByName('Security Zone');
+ IF v_column_exists = 0 THEN
+ 	INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (getXportalUIdByLoginId('rangertagsync'),getModulesIdByName('Security Zone'),current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),1);
+ END IF;
+END;
+$$ LANGUAGE plpgsql;
+select 'delimiter end';
+
+select add_security_zone_permissions();
+select 'delimiter end';
+
 commit;
 
 select 'delimiter start';
@@ -201,6 +232,23 @@ CONSTRAINT x_sz_ref_group_FK_group_id FOREIGN KEY (group_id) REFERENCES x_group 
 );
 
 select 'delimiter start';
+CREATE OR REPLACE FUNCTION add_unzone_entry()
+RETURNS void AS $$
+DECLARE
+ v_column_exists integer := 0;
+BEGIN
+  select count(*) into v_column_exists from x_security_zone where id=1 and name=' ';
+   IF v_column_exists = 0 THEN
+   		INSERT INTO x_security_zone(create_time, update_time, added_by_id, upd_by_id, version, name, jsonData, description) VALUES (current_timestamp, current_timestamp, getXportalUIdByLoginId('admin'), getXportalUIdByLoginId('admin'), 1, ' ', '', 'Unzoned zone');
+   	END IF;
+END;
+$$ LANGUAGE plpgsql;
+select 'delimiter end';
+
+select add_unzone_entry();
+select 'delimiter end';
+
+select 'delimiter start';
 CREATE OR REPLACE FUNCTION add_x_policy_zone_id()
 RETURNS void AS $$
 DECLARE
@@ -208,7 +256,7 @@ DECLARE
 BEGIN
   select count(*) into v_column_exists from pg_attribute where attrelid in(select oid from pg_class where relname='x_policy') and attname='zone_id';
    IF v_column_exists = 0 THEN
-     ALTER TABLE x_policy ADD COLUMN zone_id BIGINT DEFAULT NULL NULL,ADD CONSTRAINT x_policy_FK_zone_id FOREIGN KEY(zone_id) REFERENCES x_security_zone(id);
+     ALTER TABLE x_policy ADD COLUMN zone_id BIGINT DEFAULT 1 NOT NULL,ADD CONSTRAINT x_policy_FK_zone_id FOREIGN KEY(zone_id) REFERENCES x_security_zone(id);
    END IF;
 END;
 $$ LANGUAGE plpgsql;

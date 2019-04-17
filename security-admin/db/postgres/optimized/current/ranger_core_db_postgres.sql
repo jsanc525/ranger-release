@@ -560,6 +560,7 @@ CONSTRAINT x_security_zone_FK_added_by_id FOREIGN KEY (added_by_id) REFERENCES x
 CONSTRAINT x_security_zone_FK_upd_by_id FOREIGN KEY (upd_by_id) REFERENCES x_portal_user (id)
 );
 
+
 CREATE SEQUENCE x_ranger_global_state_seq;
 CREATE TABLE x_ranger_global_state (
 id BIGINT DEFAULT nextval('x_ranger_global_state_seq'::regclass),
@@ -595,9 +596,9 @@ is_audit_enabled BOOLEAN DEFAULT '0' NOT NULL,
 policy_options VARCHAR(4000) DEFAULT NULL NULL,
 policy_priority INT DEFAULT 0 NOT NULL,
 policy_text TEXT DEFAULT NULL NULL,
-zone_id BIGINT DEFAULT NULL NULL,
+zone_id BIGINT DEFAULT '1' NOT NULL,
 primary key(id),
-CONSTRAINT x_policy_uk_name_service UNIQUE(name,service),
+CONSTRAINT x_policy_uk_name_service_zone UNIQUE(name,service,zone_id),
 CONSTRAINT x_policy_FK_added_by_id FOREIGN KEY(added_by_id) REFERENCES x_portal_user(id),
 CONSTRAINT x_policy_FK_upd_by_id FOREIGN KEY(upd_by_id) REFERENCES x_portal_user(id),
 CONSTRAINT x_policy_FK_service FOREIGN KEY(service) REFERENCES x_service(id),
@@ -1627,6 +1628,7 @@ INSERT INTO x_user(CREATE_TIME,UPDATE_TIME,user_name,status,descr)VALUES(current
 
 INSERT INTO x_modules_master(create_time,update_time,added_by_id,upd_by_id,module,url) VALUES(current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Tag Based Policies','');
 INSERT INTO x_modules_master(create_time,update_time,added_by_id,upd_by_id,module,url) VALUES(current_timestamp,current_timestamp,getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Security Zone','');
+INSERT INTO x_security_zone(create_time, update_time, added_by_id, upd_by_id, version, name, jsonData, description) VALUES (current_timestamp, current_timestamp, getXportalUIdByLoginId('admin'), getXportalUIdByLoginId('admin'), 1, ' ', '', 'Unzoned zone');
 
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('CORE_DB_SCHEMA',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('016',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
@@ -1652,6 +1654,7 @@ INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('037',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('038',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('039',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
+INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('040',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('DB_PATCHES',current_timestamp,'Ranger 1.0.0',current_timestamp,'localhost','Y');
 
 INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES

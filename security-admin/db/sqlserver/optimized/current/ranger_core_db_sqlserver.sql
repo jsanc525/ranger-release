@@ -505,9 +505,9 @@ IF (OBJECT_ID('x_plugin_info_UK') IS NOT NULL)
 BEGIN
     ALTER TABLE [dbo].[x_plugin_info] DROP CONSTRAINT x_plugin_info_UK
 END
-IF (OBJECT_ID('x_policy$x_policy_UK_name_service') IS NOT NULL)
+IF (OBJECT_ID('x_policy$x_policy_UK_name_service_zone') IS NOT NULL)
 BEGIN
-    ALTER TABLE [dbo].[x_policy] DROP CONSTRAINT x_policy$x_policy_UK_name_service
+    ALTER TABLE [dbo].[x_policy] DROP CONSTRAINT x_policy$x_policy_UK_name_service_zone
 END
 IF (OBJECT_ID('x_sz_ref_admin_group_FK_added_by_id') IS NOT NULL)
 BEGIN
@@ -1426,14 +1426,14 @@ CREATE TABLE [dbo].[x_policy] (
         [policy_options] [varchar](4000) DEFAULT NULL NULL,
         [policy_priority] [int] DEFAULT 0 NOT NULL,
 		[policy_text] [nvarchar](max) DEFAULT NULL NULL,
-		[zone_id] [bigint] DEFAULT NULL NULL,
+		[zone_id] [bigint] DEFAULT 1 NOT NULL,
 PRIMARY KEY CLUSTERED
 (
         [id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
-CONSTRAINT [x_policy$x_policy_UK_name_service] UNIQUE NONCLUSTERED
+CONSTRAINT [x_policy$x_policy_UK_name_service_zone] UNIQUE NONCLUSTERED
 (
-        [name] ASC, [service] ASC
+        [name] ASC, [service] ASC, [zone_id] ASC
 )WITH (PAD_INDEX = OFF,STATISTICS_NORECOMPUTE = OFF,IGNORE_DUP_KEY = OFF,ALLOW_ROW_LOCKS = ON,ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 SET ANSI_NULLS ON
@@ -3656,6 +3656,7 @@ insert into x_user (CREATE_TIME,UPDATE_TIME,user_name,status,descr) values (CURR
 insert into x_portal_user (CREATE_TIME,UPDATE_TIME,FIRST_NAME,LAST_NAME,PUB_SCR_NAME,LOGIN_ID,PASSWORD,EMAIL,STATUS) values (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'rangertagsync','','rangertagsync','rangertagsync','f5820e1229418dcf2575908f2c493da5','rangertagsync',1);
 insert into x_portal_user_role (CREATE_TIME,UPDATE_TIME,USER_ID,USER_ROLE,STATUS) values (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,dbo.getXportalUIdByLoginId('rangertagsync'),'ROLE_SYS_ADMIN',1);
 insert into x_user (CREATE_TIME,UPDATE_TIME,user_name,status,descr) values (CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'rangertagsync',0,'rangertagsync');
+INSERT INTO x_security_zone(create_time, update_time, added_by_id, upd_by_id, version, name, jsonData, description) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, dbo.getXportalUIdByLoginId('admin'), dbo.getXportalUIdByLoginId('admin'), 1, ' ', '', 'Unzoned zone');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('CORE_DB_SCHEMA',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('016',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('018',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
@@ -3680,6 +3681,7 @@ INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('037',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('038',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('039',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
+INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('040',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
 INSERT INTO x_db_version_h (version,inst_at,inst_by,updated_at,updated_by,active) VALUES ('DB_PATCHES',CURRENT_TIMESTAMP,'Ranger 1.0.0',CURRENT_TIMESTAMP,'localhost','Y');
 INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (dbo.getXportalUIdByLoginId('admin'),dbo.getModulesIdByName('Reports'),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,dbo.getXportalUIdByLoginId('admin'),dbo.getXportalUIdByLoginId('admin'),1);
 INSERT INTO x_user_module_perm (user_id,module_id,create_time,update_time,added_by_id,upd_by_id,is_allowed) VALUES (dbo.getXportalUIdByLoginId('admin'),dbo.getModulesIdByName('Resource Based Policies'),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,dbo.getXportalUIdByLoginId('admin'),dbo.getXportalUIdByLoginId('admin'),1);
