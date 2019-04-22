@@ -155,6 +155,9 @@
                             <include>org.apache.hadoop:hadoop-hdfs:jar:${hadoop.version}</include>
                             <include>org.apache.solr:solr-solrj</include>
                             <include>org.apache.ranger:ranger-plugins-common</include>
+                            <include>com.kstruct:gethostname4j:jar:${kstruct.gethostname4j.version}</include>
+                    <include>net.java.dev.jna:jna:jar:${jna.version}</include>
+                    <include>net.java.dev.jna:jna-platform:jar:${jna-platform.version}</include>
                             <include>org.apache.htrace:htrace-core4:jar:${htrace-core.version}</include>
                             <include>com.fasterxml.woodstox:woodstox-core:jar:${fasterxml.woodstox.version}</include>
                             <include>org.codehaus.woodstox:stax2-api:jar:${codehaus.woodstox.stax2api.version}</include>
@@ -231,6 +234,9 @@
                             <include>org.noggit:noggit:jar:${noggit.version}</include>
                             <include>org.apache.zookeeper:zookeeper:jar:${zookeeper.version}</include>
                             <include>org.apache.solr:solr-solrj</include>
+                            <include>com.kstruct:gethostname4j:jar:${kstruct.gethostname4j.version}</include>
+                    <include>net.java.dev.jna:jna:jar:${jna.version}</include>
+                    <include>net.java.dev.jna:jna-platform:jar:${jna-platform.version}</include>
                         </includes>
                     </dependencySet>
                     <dependencySet>
