@@ -70,7 +70,7 @@
                             <include>org.apache.avro:avro</include>
                             <include>commons-beanutils:commons-beanutils</include>
                             <include>commons-cli:commons-cli</include>
-                            <include>commons-codec:commons-codec:jar:${commons.codec.version}</include>
+                            <include>commons-codec:commons-codec</include>
                             <include>org.apache.commons:commons-compress</include>
                             <include>commons-configuration:commons-configuration</include>
                             <include>commons-digester:commons-digester</include>
