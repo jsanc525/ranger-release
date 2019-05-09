@@ -59,16 +59,16 @@
 					<include>org.apache.ranger:ranger-plugins-common</include>
 					<include>org.apache.ranger:ranger-util</include>
 					<include>org.apache.zookeeper:zookeeper:jar:${zookeeper.version}</include>
-					<include>com.fasterxml.jackson.core:jackson-annotations:jar:${atlas.jackson.version}</include>
-					<include>com.fasterxml.jackson.core:jackson-core:jar:${atlas.jackson.version}</include>
-					<include>com.fasterxml.jackson.core:jackson-databind:jar:${atlas.jackson.version}</include>
-					<include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:${atlas.jackson.version}</include>
-					<include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:${atlas.jackson.version}</include>
-					<include>com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:${atlas.jackson.version}</include>
-					<include>org.codehaus.jackson:jackson-core-asl:jar:${codehaus.jackson.version}</include>
-					<include>org.codehaus.jackson:jackson-jaxrs:jar:${codehaus.jackson.version}</include>
-					<include>org.codehaus.jackson:jackson-mapper-asl:jar:${codehaus.jackson.version}</include>
-					<include>org.codehaus.jackson:jackson-xc:jar:${codehaus.jackson.version}</include>
+					<include>com.fasterxml.jackson.core:jackson-annotations</include>
+					<include>com.fasterxml.jackson.core:jackson-core</include>
+					<include>com.fasterxml.jackson.core:jackson-databind</include>
+					<include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base</include>
+					<include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider</include>
+					<include>com.fasterxml.jackson.module:jackson-module-jaxb-annotations</include>
+					<include>org.codehaus.jackson:jackson-core-asl</include>
+					<include>org.codehaus.jackson:jackson-jaxrs</include>
+					<include>org.codehaus.jackson:jackson-mapper-asl</include>
+					<include>org.codehaus.jackson:jackson-xc</include>
 					<include>org.codehaus.jettison:jettison:jar:${jettison.version}</include>
 					<include>org.json4s:json4s-native_${scala.binary.version}:jar:${json4s.version}</include>
 					<include>org.json4s:json4s-core_${scala.binary.version}:jar:${json4s.version}</include>
