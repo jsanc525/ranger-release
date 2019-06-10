@@ -46,7 +46,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.ranger.authorization.hadoop.utils.RangerCredentialProvider;
 import org.apache.ranger.authorization.utils.StringUtil;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public class RangerSslHelper {
 	private static final Log LOG = LogFactory.getLog(RangerSslHelper.class);
@@ -130,7 +130,7 @@ public class RangerSslHelper {
 			mTrustStoreFile  = conf.get(RANGER_POLICYMGR_TRUSTSTORE_FILE);
 
 			if (LOG.isDebugEnabled()) {
-				LOG.debug(Objects.toStringHelper("RangerSslHelper")
+				LOG.debug(MoreObjects.toStringHelper("RangerSslHelper")
 					.add("keyStoreAlias", mKeyStoreAlias)
 					.add("keyStoreFile", mKeyStoreFile)
 					.add("keyStoreType", mKeyStoreType)

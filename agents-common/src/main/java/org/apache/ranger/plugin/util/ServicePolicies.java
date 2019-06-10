@@ -35,7 +35,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -149,7 +149,7 @@ public class ServicePolicies implements java.io.Serializable {
 	
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this.getClass())
+		return MoreObjects.toStringHelper(this.getClass())
 			.add("serviceName", serviceName)
 			.add("serviceId", serviceId)
 			.add("policyVersion", policyVersion)
@@ -259,7 +259,7 @@ public class ServicePolicies implements java.io.Serializable {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this.getClass())
+			return MoreObjects.toStringHelper(this.getClass())
 					.add("serviceName", serviceName)
 					.add("serviceId", serviceId)
 					.add("policyVersion", policyVersion)
