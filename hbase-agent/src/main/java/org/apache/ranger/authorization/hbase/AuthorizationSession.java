@@ -22,6 +22,7 @@ package org.apache.ranger.authorization.hbase;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -331,7 +332,7 @@ public class AuthorizationSession {
 	}
 	
 	String requestToString() {
-		return Objects.toStringHelper(_request.getClass())
+		return MoreObjects.toStringHelper(_request.getClass())
 			.add("operation", _operation)
 			.add("otherInformation", _otherInformation)
 			.add("access", _access)

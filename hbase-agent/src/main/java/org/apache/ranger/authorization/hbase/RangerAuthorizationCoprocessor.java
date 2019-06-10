@@ -106,6 +106,7 @@ import org.apache.ranger.plugin.service.RangerBasePlugin;
 import org.apache.ranger.plugin.util.GrantRevokeRequest;
 
 import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.google.protobuf.RpcCallback;
@@ -289,7 +290,7 @@ public class RangerAuthorizationCoprocessor extends RangerAuthorizationCoprocess
 		
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(getClass())
+			return MoreObjects.toStringHelper(getClass())
 					.add("everythingIsAccessible", _everythingIsAccessible)
 					.add("somethingIsAccessible", _somethingIsAccessible)
 					.add("accessAllowedEvents", _accessAllowedEvents)
