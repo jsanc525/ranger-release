@@ -162,19 +162,22 @@ public class SolrAccessAuditsService {
 		for (int i = 0; i < docs.size(); i++) {
 			SolrDocument doc = docs.get(i);
 			VXAccessAudit vXAccessAudit = populateViewBean(doc);
-                        if (vXAccessAudit != null) {
-                                if (!hiveQueryVisibility && "hive".equalsIgnoreCase(vXAccessAudit.getServiceType())) {
-                                        vXAccessAudit.setRequestData(null);
-                                }
-                                else if("hive".equalsIgnoreCase(vXAccessAudit.getServiceType()) && ("grant".equalsIgnoreCase(vXAccessAudit.getAccessType()) || "revoke".equalsIgnoreCase(vXAccessAudit.getAccessType()))){
-                                        try {
-                                                vXAccessAudit.setRequestData(java.net.URLDecoder.decode(vXAccessAudit.getRequestData(), "UTF-8"));
-                                        } catch (UnsupportedEncodingException e) {
-                                                LOGGER.warn("Error while encoding request data");
-                                        }
-                                }
-                        }
-                        xAccessAuditList.add(vXAccessAudit);
+			if (vXAccessAudit != null) {
+				if (!hiveQueryVisibility && "hive".equalsIgnoreCase(vXAccessAudit.getServiceType())) {
+					vXAccessAudit.setRequestData(null);
+				} else if ("hive".equalsIgnoreCase(vXAccessAudit.getServiceType()) && ("grant".equalsIgnoreCase(vXAccessAudit.getAccessType()) || "revoke".equalsIgnoreCase(vXAccessAudit.getAccessType()))) {
+					try {
+						if (vXAccessAudit.getRequestData() != null) {
+							vXAccessAudit.setRequestData(java.net.URLDecoder.decode(vXAccessAudit.getRequestData(), "UTF-8"));
+						} else {
+							LOGGER.warn("Error in request data of audit from solr. AuditData: " + vXAccessAudit.toString());
+						}
+					} catch (UnsupportedEncodingException e) {
+						LOGGER.warn("Error while encoding request data");
+					}
+				}
+			}
+			xAccessAuditList.add(vXAccessAudit);
 		}
 
 		VXAccessAuditList returnList = new VXAccessAuditList();
