@@ -105,7 +105,6 @@ import org.apache.ranger.plugin.policyengine.RangerAccessResultProcessor;
 import org.apache.ranger.plugin.service.RangerBasePlugin;
 import org.apache.ranger.plugin.util.GrantRevokeRequest;
 
-import com.google.common.base.Objects;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
@@ -155,7 +154,7 @@ public class RangerAuthorizationCoprocessor extends RangerAuthorizationCoprocess
 		}
 		String systemUser = user.getShortName();
 		User activeUser = getActiveUser();
-		if (!Objects.equal(systemUser, activeUser.getShortName()) && !_userUtils.isSuperUser(activeUser)) {
+		if (!java.util.Objects.equals(systemUser, activeUser.getShortName()) && !_userUtils.isSuperUser(activeUser)) {
 			throw new AccessDeniedException("User '" + user.getShortName() + "is not system or super user.");
 		}
 	}
