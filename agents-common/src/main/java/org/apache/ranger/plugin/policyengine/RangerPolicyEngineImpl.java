@@ -1321,7 +1321,6 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 					}
 
 					if (ret.getIsAuditedDetermined() && ret.getIsAccessDetermined()) {
-						ret.setPolicyVersion(evaluator.getPolicy().getVersion());
 						break;            // Break out of policy-evaluation loop
 					}
 
