@@ -426,9 +426,7 @@ public class TestPolicyEngine {
 				trustedProxyAddresses[i] = trustedProxyAddresses[i].trim();
 			}
 		}
-		RangerPluginContext pluginContext = new RangerPluginContext("hive");
-		pluginContext.setClusterName("cl1");
-		RangerPolicyEngine policyEngine = new RangerPolicyEngineImpl(testName, servicePolicies, policyEngineOptions,  pluginContext);
+		RangerPolicyEngine policyEngine = new RangerPolicyEngineImpl(testName, servicePolicies, policyEngineOptions);
 
 		policyEngine.setUseForwardedIPAddress(useForwardedIPAddress);
 		policyEngine.setTrustedProxyAddresses(trustedProxyAddresses);
@@ -436,7 +434,7 @@ public class TestPolicyEngine {
 		policyEngineOptions.disableAccessEvaluationWithPolicyACLSummary = true;
 		policyEngineOptions.optimizeTrieForRetrieval = false;
 
-		RangerPolicyEngine policyEngineForResourceAccessInfo = new RangerPolicyEngineImpl(testName, servicePolicies, policyEngineOptions,  pluginContext);
+		RangerPolicyEngine policyEngineForResourceAccessInfo = new RangerPolicyEngineImpl(testName, servicePolicies, policyEngineOptions);
 
 		policyEngineForResourceAccessInfo.setUseForwardedIPAddress(useForwardedIPAddress);
 		policyEngineForResourceAccessInfo.setTrustedProxyAddresses(trustedProxyAddresses);

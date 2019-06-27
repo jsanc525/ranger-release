@@ -56,6 +56,7 @@ public class KnoxRangerPlugin extends RangerBasePlugin {
 		String _user;
 		Set<String> _groups;
 		String _clientIp;
+		String _clusterName;
 		String _remoteIp;
 		List<String> _forwardedAddresses;
 		
@@ -77,6 +78,10 @@ public class KnoxRangerPlugin extends RangerBasePlugin {
 		}
 		RequestBuilder clientIp(String clientIp) {
 			_clientIp = clientIp;
+			return this;
+		}
+		RequestBuilder clusterName(String clusterName) {
+			_clusterName = clusterName;
 			return this;
 		}
 		RequestBuilder remoteIp(String remoteIp) {
@@ -106,6 +111,7 @@ public class KnoxRangerPlugin extends RangerBasePlugin {
 			request.setUser(_user);
 			request.setUserGroups(_groups);
 			request.setResource(resource);
+			request.setClusterName(_clusterName);
 			request.setRemoteIPAddress(_remoteIp);
 			request.setForwardedAddresses(_forwardedAddresses);
 			return request;

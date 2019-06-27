@@ -108,6 +108,7 @@ public class RangerYarnAuthorizer extends YarnAuthorizationProvider {
 
 		if(plugin != null) {
 			RangerYarnAccessRequest request = new RangerYarnAccessRequest(accessRequest);
+			request.setClusterName(plugin.getClusterName());
 			auditHandler = new RangerYarnAuditHandler();
 
 			result = plugin.isAccessAllowed(request, auditHandler);

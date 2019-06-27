@@ -91,9 +91,7 @@ public class TestPolicyACLs {
 
 		for(PolicyACLsTests.TestCase testCase : testCases.testCases) {
 			RangerPolicyEngineOptions policyEngineOptions = new RangerPolicyEngineOptions();
-			RangerPluginContext pluginContext = new RangerPluginContext("hive");
-			pluginContext.setClusterName("cl1");
-			RangerPolicyEngine policyEngine = new RangerPolicyEngineImpl("test-policy-acls", testCase.servicePolicies, policyEngineOptions, pluginContext);
+			RangerPolicyEngine policyEngine = new RangerPolicyEngineImpl("test-policy-acls", testCase.servicePolicies, policyEngineOptions);
 
 			for(PolicyACLsTests.TestCase.OneTest oneTest : testCase.tests) {
 				if(oneTest == null) {

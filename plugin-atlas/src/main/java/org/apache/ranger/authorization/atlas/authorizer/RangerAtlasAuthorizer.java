@@ -111,6 +111,7 @@ public class RangerAtlasAuthorizer implements AtlasAuthorizer {
             rangerRequest.setClientIPAddress(request.getClientIPAddress());
             rangerRequest.setAccessTime(request.getAccessTime());
             rangerRequest.setAction(action);
+            rangerRequest.setClusterName(getClusterName());
 
             ret = checkAccess(rangerRequest);
         } finally {
@@ -182,6 +183,7 @@ public class RangerAtlasAuthorizer implements AtlasAuthorizer {
             RangerAccessRequestImpl rangerRequest = new RangerAccessRequestImpl(rangerResource, action, request.getUser(), request.getUserGroups());
             rangerRequest.setClientIPAddress(request.getClientIPAddress());
             rangerRequest.setAccessTime(request.getAccessTime());
+            rangerRequest.setClusterName(getClusterName());
             rangerRequest.setAction(action);
 
 
@@ -227,6 +229,7 @@ public class RangerAtlasAuthorizer implements AtlasAuthorizer {
             RangerAccessRequestImpl rangerRequest = new RangerAccessRequestImpl(rangerResource, action, request.getUser(), request.getUserGroups());
             rangerRequest.setClientIPAddress(request.getClientIPAddress());
             rangerRequest.setAccessTime(request.getAccessTime());
+            rangerRequest.setClusterName(getClusterName());
             rangerRequest.setAction(action);
 
 
@@ -311,6 +314,12 @@ public class RangerAtlasAuthorizer implements AtlasAuthorizer {
         }
     }
 
+    private String getClusterName() {
+        RangerBasePlugin plugin = atlasPlugin;
+
+        return plugin != null ? plugin.getClusterName() : null;
+    }
+
     private RangerServiceDef getServiceDef() {
         RangerBasePlugin plugin = atlasPlugin;
 
@@ -342,6 +351,7 @@ public class RangerAtlasAuthorizer implements AtlasAuthorizer {
             rangerRequest.setUserGroups(request.getUserGroups());
             rangerRequest.setClientIPAddress(request.getClientIPAddress());
             rangerRequest.setAccessTime(request.getAccessTime());
+            rangerRequest.setClusterName(getClusterName());
             rangerRequest.setResource(rangerResource);
 
             if (StringUtils.isNotEmpty(classification)) {

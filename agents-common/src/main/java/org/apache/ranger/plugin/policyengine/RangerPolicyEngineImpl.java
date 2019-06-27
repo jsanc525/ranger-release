@@ -82,15 +82,10 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 
 	private Map<String, RangerPolicyRepository> policyRepositories = new HashMap<>();
 
-	private final RangerPluginContext rangerPluginContext;
 	private Map<String, RangerResourceTrie>   trieMap;
 	private Map<String, String>               zoneTagServiceMap;
 
 	public RangerPolicyEngineImpl(final RangerPolicyEngineImpl other, ServicePolicies servicePolicies) {
-		 this(other, servicePolicies, null);
-	}
-
-	public RangerPolicyEngineImpl(final RangerPolicyEngineImpl other, ServicePolicies servicePolicies,  RangerPluginContext rangerPluginContext) {
 
 		List<RangerPolicyDelta> deltas        = servicePolicies.getPolicyDeltas();
 		long                    policyVersion = servicePolicies.getPolicyVersion();
@@ -198,8 +193,6 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 			}
 		}
 
-		this.rangerPluginContext = (rangerPluginContext != null) ? rangerPluginContext : null;
-
 		List<RangerContextEnricher> tmpList;
 
 		List<RangerContextEnricher> tagContextEnrichers = tagPolicyRepository == null ? null :tagPolicyRepository.getContextEnrichers();
@@ -220,12 +213,8 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 	}
 
 	public RangerPolicyEngineImpl(String appId, ServicePolicies servicePolicies, RangerPolicyEngineOptions options) {
-		 this(appId, servicePolicies, options, null);
-	}
-
-	public RangerPolicyEngineImpl(String appId, ServicePolicies servicePolicies, RangerPolicyEngineOptions options, RangerPluginContext rangerPluginContext) {
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("==> RangerPolicyEngineImpl(" + appId + ", " + servicePolicies + ", " + options + ", " + rangerPluginContext + ")");
+			LOG.debug("==> RangerPolicyEngineImpl(" + appId + ", " + servicePolicies + ", " + options + ")");
 		}
 
 		RangerPerfTracer perf = null;
@@ -240,8 +229,6 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 		if (options == null) {
 			options = new RangerPolicyEngineOptions();
 		}
-
-		this.rangerPluginContext = (rangerPluginContext != null) ? rangerPluginContext : null;
 
 		if(StringUtils.isBlank(options.evaluatorType) || StringUtils.equalsIgnoreCase(options.evaluatorType, RangerPolicyEvaluator.EVALUATOR_TYPE_AUTO)) {
 
@@ -337,10 +324,8 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 			perf = RangerPerfTracer.getPerfTracer(PERF_POLICYENGINE_INIT_LOG, "RangerPolicyEngine.cloneWithDelta()");
 		}
 
-		RangerServiceDef serviceDef = this.getServiceDef();
-		String serviceType = (serviceDef != null) ? serviceDef.getName() : "";
-		if (CollectionUtils.isNotEmpty(servicePolicies.getPolicyDeltas()) && RangerPolicyDeltaUtil.isValidDeltas(servicePolicies.getPolicyDeltas(), serviceType)) {
-			ret = new RangerPolicyEngineImpl(this, servicePolicies, this.rangerPluginContext);
+		if (CollectionUtils.isNotEmpty(servicePolicies.getPolicyDeltas()) && RangerPolicyDeltaUtil.isValidDeltas(servicePolicies.getPolicyDeltas(), this.getServiceDef().getName())) {
+			ret = new RangerPolicyEngineImpl(this, servicePolicies);
 		} else {
 			ret = null;
 		}
@@ -415,12 +400,7 @@ public class RangerPolicyEngineImpl implements RangerPolicyEngine {
 
 		setResourceServiceDef(request);
 		if (request instanceof RangerAccessRequestImpl) {
-			RangerAccessRequestImpl reqImpl = (RangerAccessRequestImpl) request;
-			reqImpl.extractAndSetClientIPAddress(useForwardedIPAddress, trustedProxyAddresses);
-
-			if(rangerPluginContext != null) {
-				reqImpl.setClusterName(rangerPluginContext.getClusterName());
-			}
+			((RangerAccessRequestImpl) request).extractAndSetClientIPAddress(useForwardedIPAddress, trustedProxyAddresses);
 		}
 
 		RangerAccessRequestUtil.setCurrentUserInContext(request.getContext(), request.getUser());

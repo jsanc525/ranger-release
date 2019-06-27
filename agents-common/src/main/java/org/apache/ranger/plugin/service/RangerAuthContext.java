@@ -21,8 +21,6 @@ package org.apache.ranger.plugin.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ranger.plugin.contextenricher.RangerContextEnricher;
 import org.apache.ranger.plugin.model.RangerPolicy;
 import org.apache.ranger.plugin.model.RangerServiceDef;
@@ -32,7 +30,6 @@ import org.apache.ranger.plugin.policyengine.RangerAccessResource;
 import org.apache.ranger.plugin.policyengine.RangerAccessResult;
 import org.apache.ranger.plugin.policyengine.RangerAccessResultProcessor;
 import org.apache.ranger.plugin.policyengine.RangerMutableResource;
-import org.apache.ranger.plugin.policyengine.RangerPluginContext;
 import org.apache.ranger.plugin.policyengine.RangerPolicyEngine;
 import org.apache.ranger.plugin.policyengine.RangerResourceACLs;
 import org.apache.ranger.plugin.policyengine.RangerResourceAccessInfo;
@@ -47,40 +44,27 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RangerAuthContext implements RangerPolicyEngine {
-	private static final Log LOG = LogFactory.getLog(RangerAuthContext.class);
-	private final RangerPluginContext rangerPluginContext;
     private RangerPolicyEngine policyEngine;
     private Map<RangerContextEnricher, Object> requestContextEnrichers;
 
     protected RangerAuthContext() {
-        this(null, null, null);
+        this(null, null);
     }
 
-    protected RangerAuthContext(RangerPluginContext rangerPluginContext) {
-        this(null, null, rangerPluginContext);
-    }
-
-    RangerAuthContext(RangerPolicyEngine policyEngine, Map<RangerContextEnricher, Object> requestContextEnrichers, RangerPluginContext rangerPluginContext) {
+    RangerAuthContext(RangerPolicyEngine policyEngine, Map<RangerContextEnricher, Object> requestContextEnrichers) {
         this.policyEngine = policyEngine;
         this.requestContextEnrichers = requestContextEnrichers;
-        this.rangerPluginContext = rangerPluginContext;
     }
 
-	RangerAuthContext(RangerAuthContext other) {
-		this(other, null);
-	}
-
-    RangerAuthContext(RangerAuthContext other, RangerPluginContext rangerPluginContext) {
-        if (other != null) {
-            this.policyEngine = other.getPolicyEngine();
-            Map<RangerContextEnricher, Object> localReference = other.requestContextEnrichers;
-            if (MapUtils.isNotEmpty(localReference)) {
-                this.requestContextEnrichers = new ConcurrentHashMap<>(localReference);
-                }
-            }
-        this.rangerPluginContext = rangerPluginContext;
+    RangerAuthContext(RangerAuthContext other) {
+    	if (other != null) {
+		    this.policyEngine = other.getPolicyEngine();
+		    Map<RangerContextEnricher, Object> localReference = other.requestContextEnrichers;
+		    if (MapUtils.isNotEmpty(localReference)) {
+			    this.requestContextEnrichers = new ConcurrentHashMap<>(localReference);
+		    }
+	    }
     }
-
     public RangerPolicyEngine getPolicyEngine() {
         return policyEngine;
     }
@@ -158,9 +142,7 @@ public class RangerAuthContext implements RangerPolicyEngine {
 
     @Override
     public void preProcess(RangerAccessRequest request) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("==> RangerAuthContext.preProcess");
-		}
+
         RangerAccessResource resource = request.getResource();
         if (resource.getServiceDef() == null) {
 	        if (resource instanceof RangerMutableResource) {
@@ -169,11 +151,7 @@ public class RangerAuthContext implements RangerPolicyEngine {
 	        }
         }
 	    if (request instanceof RangerAccessRequestImpl) {
-	        RangerAccessRequestImpl reqImpl = (RangerAccessRequestImpl) request;
-	        reqImpl.extractAndSetClientIPAddress(getUseForwardedIPAddress(), getTrustedProxyAddresses());
-	        if(rangerPluginContext != null) {
-	            reqImpl.setClusterName(rangerPluginContext.getClusterName());
-			}
+		    ((RangerAccessRequestImpl) request).extractAndSetClientIPAddress(getUseForwardedIPAddress(), getTrustedProxyAddresses());
 	    }
 
 	    RangerAccessRequestUtil.setCurrentUserInContext(request.getContext(), request.getUser());
@@ -187,9 +165,6 @@ public class RangerAuthContext implements RangerPolicyEngine {
                 }
             }
         }
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("<== RangerAuthContext.preProcess");
-		}
     }
 
     @Override

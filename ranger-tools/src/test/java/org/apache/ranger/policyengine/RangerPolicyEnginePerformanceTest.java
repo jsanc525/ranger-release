@@ -34,7 +34,6 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.ranger.plugin.model.RangerPolicy;
 import org.apache.ranger.plugin.policyengine.RangerAccessRequest;
-import org.apache.ranger.plugin.policyengine.RangerPluginContext;
 import org.apache.ranger.plugin.policyengine.RangerPolicyEngineImpl;
 import org.apache.ranger.plugin.util.PerfDataRecorder;
 import org.apache.ranger.plugin.util.PerfDataRecorder.PerfStatistic;
@@ -145,9 +144,8 @@ public class RangerPolicyEnginePerformanceTest {
 	public void policyEngineTest() throws InterruptedException {
 		List<RangerAccessRequest> requests = requestsCache.getUnchecked(concurrency);
 		ServicePolicies servicePolicies = servicePoliciesCache.getUnchecked(numberOfPolicies);
-		RangerPluginContext pluginContext = new RangerPluginContext("hive");
-		pluginContext.setClusterName("cl1");
-		final RangerPolicyEngineImpl rangerPolicyEngine = new RangerPolicyEngineImpl("perf-test", servicePolicies, RangerPolicyFactory.createPolicyEngineOption(), pluginContext);
+
+		final RangerPolicyEngineImpl rangerPolicyEngine = new RangerPolicyEngineImpl("perf-test", servicePolicies, RangerPolicyFactory.createPolicyEngineOption());
 		rangerPolicyEngine.preProcess(requests);
 
 		for (int iterations = 0; iterations < WARM_UP__ITERATIONS; iterations++) {

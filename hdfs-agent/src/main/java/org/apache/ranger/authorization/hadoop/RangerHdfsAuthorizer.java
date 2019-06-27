@@ -520,6 +520,7 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 		private AuthzStatus isAccessAllowedForTraversal(INode inode, INodeAttributes inodeAttribs, String path, String user, Set<String> groups, RangerHdfsPlugin plugin, RangerHdfsAuditHandler auditHandler, boolean skipAuditOnAllow) {
 			final AuthzStatus ret;
 			String pathOwner = inodeAttribs != null ? inodeAttribs.getUserName() : null;
+			String clusterName = plugin.getClusterName();
 			FsAction access = FsAction.EXECUTE;
 
 
@@ -535,7 +536,7 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 				LOG.debug("==> RangerAccessControlEnforcer.isAccessAllowedForTraversal(" + path + ", " + access + ", " + user + ", " + skipAuditOnAllow + ")");
 			}
 
-			RangerHdfsAccessRequest request = new RangerHdfsAccessRequest(inode, path, pathOwner, access, EXECUTE_ACCCESS_TYPE, user, groups);
+			RangerHdfsAccessRequest request = new RangerHdfsAccessRequest(inode, path, pathOwner, access, EXECUTE_ACCCESS_TYPE, user, groups, clusterName);
 
 			RangerAccessResult result = plugin.isAccessAllowed(request, null);
 
@@ -638,6 +639,7 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 		private AuthzStatus isAccessAllowed(INode inode, INodeAttributes inodeAttribs, String path, FsAction access, String user, Set<String> groups, RangerHdfsPlugin plugin, RangerHdfsAuditHandler auditHandler) {
 			AuthzStatus ret       = null;
 			String      pathOwner = inodeAttribs != null ? inodeAttribs.getUserName() : null;
+			String 		clusterName = plugin.getClusterName();
 
 			if(pathOwner == null && inode != null) {
 				pathOwner = inode.getUserName();
@@ -660,7 +662,7 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 			}
 
 			for(String accessType : accessTypes) {
-				RangerHdfsAccessRequest request = new RangerHdfsAccessRequest(inode, path, pathOwner, access, accessType, user, groups);
+				RangerHdfsAccessRequest request = new RangerHdfsAccessRequest(inode, path, pathOwner, access, accessType, user, groups, clusterName);
 
 				RangerAccessResult result = plugin.isAccessAllowed(request, auditHandler);
 
@@ -691,6 +693,7 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 		private AuthzStatus isAccessAllowedForHierarchy(INode inode, INodeAttributes inodeAttribs, String path, FsAction access, String user, Set<String> groups, RangerHdfsPlugin plugin) {
 			AuthzStatus ret   = null;
 			String  pathOwner = inodeAttribs != null ? inodeAttribs.getUserName() : null;
+			String 		clusterName = plugin.getClusterName();
 
 			if (pathOwner == null && inode != null) {
 				pathOwner = inode.getUserName();
@@ -721,7 +724,7 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 				subDirPath = subDirPath + RangerHdfsPlugin.getRandomizedWildcardPathName();
 
 				for (String accessType : accessTypes) {
-					RangerHdfsAccessRequest request = new RangerHdfsAccessRequest(null, subDirPath, pathOwner, access, accessType, user, groups);
+					RangerHdfsAccessRequest request = new RangerHdfsAccessRequest(null, subDirPath, pathOwner, access, accessType, user, groups, clusterName);
 
 					RangerAccessResult result = plugin.isAccessAllowed(request, null);
 
@@ -818,7 +821,7 @@ class RangerHdfsResource extends RangerAccessResourceImpl {
 
 class RangerHdfsAccessRequest extends RangerAccessRequestImpl {
 
-	public RangerHdfsAccessRequest(INode inode, String path, String pathOwner, FsAction access, String accessType, String user, Set<String> groups) {
+	public RangerHdfsAccessRequest(INode inode, String path, String pathOwner, FsAction access, String accessType, String user, Set<String> groups, String clusterName) {
 		super.setResource(new RangerHdfsResource(path, pathOwner));
 		super.setAccessType(accessType);
 		super.setUser(user);
@@ -826,6 +829,7 @@ class RangerHdfsAccessRequest extends RangerAccessRequestImpl {
 		super.setAccessTime(new Date());
 		super.setClientIPAddress(getRemoteIp());
 		super.setAction(access.toString());
+		super.setClusterName(clusterName);
 
 		if (inode != null) {
 			buildRequestContext(inode);

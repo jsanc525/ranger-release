@@ -115,9 +115,8 @@ public class TestPolicyDb {
 		policyEngineOptions.cacheAuditResults       = false;
 		policyEngineOptions.disableContextEnrichers = true;
 		policyEngineOptions.disableCustomConditions = true;
-		RangerPluginContext pluginContext = new RangerPluginContext("hive");
-		pluginContext.setClusterName("cl1");
-		RangerPolicyEngine policyEngine = new RangerPolicyEngineImpl("test-policydb", testCase.servicePolicies, policyEngineOptions, pluginContext);
+
+		RangerPolicyEngine policyEngine = new RangerPolicyEngineImpl("test-policydb", testCase.servicePolicies, policyEngineOptions);
 
 		for(TestData test : testCase.tests) {
 			boolean expected = test.result;

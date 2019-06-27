@@ -100,10 +100,12 @@ public class RangerSqoopAuthorizer extends AuthorizationValidator {
 		}
 
 		RangerSqoopPlugin plugin = sqoopPlugin;
+		String clusterName = sqoopPlugin.getClusterName();
 
 		if (plugin != null) {
 			for (MPrivilege privilege : privileges) {
-				RangerSqoopAccessRequest request = new RangerSqoopAccessRequest(principal, privilege, clientIPAddress);
+				RangerSqoopAccessRequest request = new RangerSqoopAccessRequest(principal, privilege, clusterName,
+						clientIPAddress);
 
 				RangerAccessResult result = plugin.isAccessAllowed(request);
 				if (result != null && !result.getIsAllowed()) {
@@ -166,7 +168,8 @@ class RangerSqoopResource extends RangerAccessResourceImpl {
 }
 
 class RangerSqoopAccessRequest extends RangerAccessRequestImpl {
-	public RangerSqoopAccessRequest(MPrincipal principal, MPrivilege privilege,String clientIPAddress) {
+	public RangerSqoopAccessRequest(MPrincipal principal, MPrivilege privilege, String clusterName,
+			String clientIPAddress) {
 		super.setResource(new RangerSqoopResource(privilege.getResource()));
 		if (MPrincipal.TYPE.USER.name().equals(principal.getType())) {
 			super.setUser(principal.getName());
@@ -181,5 +184,6 @@ class RangerSqoopAccessRequest extends RangerAccessRequestImpl {
 
 		super.setAccessTime(new Date());
 		super.setClientIPAddress(clientIPAddress);
+		super.setClusterName(clusterName);
 	}
 }
