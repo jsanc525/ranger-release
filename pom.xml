@@ -228,7 +228,7 @@
         <zookeeper.version>3.4.6.2.6.5.0-SNAPSHOT</zookeeper.version>
         <libfb303.version>0.9.3</libfb303.version>
         <hive.thrift.version>0.12.0</hive.thrift.version>
-        <fasterxml.jackson.version>2.9.8</fasterxml.jackson.version>
+        <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
     </properties>
     <profiles>
         <profile>
