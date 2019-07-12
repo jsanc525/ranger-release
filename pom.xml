@@ -229,6 +229,7 @@
         <libfb303.version>0.9.3</libfb303.version>
         <hive.thrift.version>0.12.0</hive.thrift.version>
         <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
+        <fasterxml.jackson.databind.version>2.9.9.1</fasterxml.jackson.databind.version>
     </properties>
     <profiles>
         <profile>
@@ -386,7 +387,7 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>${fasterxml.jackson.version}</version>
+				<version>${fasterxml.jackson.databind.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
