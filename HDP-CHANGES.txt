@@ -175,3 +175,4 @@ Changes only in Hortonworks github and not in Ranger 0.7.0 Apache Release
 [RANGER-2006] : Fix problems detected by static code analysis in ranger usersync for ldap sync source
 [RANGER-2008] : Policy evaluation is failing for multiline policy conditions.
 [RANGER-1731] : : Add jettison jar to the security-admin module
+[RANGER-2509] : BUG-121150: Add validation message for Importing non JSON file on import action

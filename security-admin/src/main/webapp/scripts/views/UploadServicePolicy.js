@@ -135,6 +135,9 @@ define(function(require){
 				}
 				return modal.preventClose();
 			}
+                        if(!(this.targetFileObj.name).match(".json$", "i")) {
+                                return modal.preventClose();
+                        }
 			var that = this, serviceMapping = {}, fileObj = this.targetFileObj, preventModal = false , url ="";
 			if(this.$el.find('input[data-name="override"]').is(':checked')){
         	    url = "service/plugins/policies/importPoliciesFromFile?isOverride=true";
@@ -270,19 +273,28 @@ define(function(require){
 		importPolicy : function(e){
 			var that =this;
 			console.log("uploading....");
-			this.$el.find('.selectFile').hide(); 
 			this.$el.find('.selectFileValidationMsg').hide(); 
-			this.$el.find('.fileValidation').hide();
-			this.targetFileObj = e.target.files[0];
+                        if(e.target && e.target.files.length > 0){
+                                this.targetFileObj = e.target.files[0];
+                        } else {
+                                return
+                        }
 			if(!_.isUndefined(this.targetFileObj)){
-				this.$el.find('.selectFile').html('<i>'+this.targetFileObj.name+'</i><label class="icon icon-remove icon-1x icon-remove-btn" data-id="fileNameClosebtn"></label>').show()
+                                this.$el.find('.selectFile').text(this.targetFileObj.name);
+                                this.$el.find('.selectFile').append('<i></i><label class="icon icon-remove icon-1x icon-remove-btn" data-id="fileNameClosebtn"></label>');
+                                //check if file name is proper json extension or not
+                                if(this.targetFileObj.type === "application/json" || (this.targetFileObj.name).match(".json$", "i")) {
+                                        console.log('JSON file imported...')
+                                } else {
+                                        this.$el.find('.fileValidation').show();
+                                        return
+                                }
 			}else{
 				this.$el.find('.selectFile').html("No file chosen").show();
 			}
 		},
 		fileNameClosebtn : function(){
-            this.$el.find('.selectFile').hide()
-	     	this.$el.find('.selectFile').html("No file chosen").show()
+            this.$el.find('.selectFile').text("No file chosen");
 			this.$el.find('.fileValidation').hide();
 			this.$el.find('.selectFileValidationMsg').hide();
 			this.targetFileObj = undefined;
