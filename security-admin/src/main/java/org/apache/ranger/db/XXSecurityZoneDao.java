@@ -73,4 +73,39 @@ public class XXSecurityZoneDao extends BaseDao<XXSecurityZone> {
             return Collections.emptyList();
         }
     }
+    public List<String> findZonesByTagServiceName(String tagServiceName) {
+        if (tagServiceName == null) {
+            return Collections.emptyList();
+        }
+        try {
+            return getEntityManager().createNamedQuery("XXSecurityZone.findByTagServiceName", String.class)
+                    .setParameter("tagServiceName", tagServiceName).getResultList();
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        }
+    }
+	public List<String> findZoneNamesByUserId(Long userId) {
+		if (userId == null) {
+			return Collections.emptyList();
+		}
+		try {
+			return getEntityManager().createNamedQuery("XXSecurityZone.findZoneNamesByUserId", String.class)
+					.setParameter("userId", userId).getResultList();
+		} catch (NoResultException e) {
+			return Collections.emptyList();
+		}
+	}
+
+	public List<String> findZoneNamesByGroupId(Long groupId) {
+		if (groupId == null) {
+			return Collections.emptyList();
+		}
+		try {
+			return getEntityManager().createNamedQuery("XXSecurityZone.findZoneNamesByGroupId", String.class)
+					.setParameter("groupId", groupId).getResultList();
+		} catch (NoResultException e) {
+			return Collections.emptyList();
+		}
+	}
+
 }
