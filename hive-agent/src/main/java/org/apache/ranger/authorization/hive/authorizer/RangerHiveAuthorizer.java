@@ -95,8 +95,6 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 
 	private static volatile RangerHivePlugin hivePlugin = null;
 
-	private static RangerAuthContext authContext;
-
 	public RangerHiveAuthorizer(HiveMetastoreClientFactory metastoreClientFactory,
 								  HiveConf                   hiveConf,
 								  HiveAuthenticationProvider hiveAuthenticator,
@@ -392,7 +390,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 
 			buildRequestContextWithAllAccessedResources(requests);
 
-            RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
+            final RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
 
             for(RangerHiveAccessRequest request : requests) {
 				if (LOG.isDebugEnabled()) {
@@ -549,7 +547,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			if (ret == null) { // if we got any items to filter then we can't return back a null.  We must return back a list even if its empty.
 				ret = new ArrayList<HivePrivilegeObject>(objs.size());
 			}
-            RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
+            final RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
 
             for (HivePrivilegeObject privilegeObject : objs) {
 				if (LOG.isDebugEnabled()) {
@@ -613,7 +611,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			perf = RangerPerfTracer.getPerfTracer(PERF_HIVEAUTH_REQUEST_LOG, "RangerHiveAuthorizer.applyRowFilterAndColumnMasking()");
 		}
 
-        RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
+        final RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
 
         if(CollectionUtils.isNotEmpty(hiveObjs)) {
 			for (HivePrivilegeObject hiveObj : hiveObjs) {
@@ -1651,7 +1649,6 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		}
 
 		try {
-			authContext            = hivePlugin.createRangerAuthContext();
 			HiveObjectRef msObjRef = AuthorizationUtils.getThriftHiveObjectRef(privObj);
 
 			if (msObjRef.getObjectName() == null) {
@@ -1943,6 +1940,8 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 
 		RangerHiveResource hiveResource = RangerHiveAuthorizer.createHiveResource(hiveObject);
 		RangerAccessRequestImpl request = new RangerAccessRequestImpl(hiveResource, RangerPolicyEngine.ANY_ACCESS, null, null);
+
+		final RangerAuthContext authContext = hivePlugin.createRangerAuthContext();
 
 		ret = authContext.getResourceACLs(request);
 

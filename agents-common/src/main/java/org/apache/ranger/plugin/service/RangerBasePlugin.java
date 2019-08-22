@@ -78,7 +78,6 @@ public class RangerBasePlugin {
 	private RangerPolicyEngine        policyEngine;
 	private RangerPolicyEngineOptions policyEngineOptions = new RangerPolicyEngineOptions();
 	private RangerAuthContext         currentAuthContext;
-	private RangerAuthContext         readOnlyAuthContext;
 	private RangerAccessResultProcessor resultProcessor;
 	private boolean                   useForwardedIPAddress;
 	private String[]                  trustedProxyAddresses;
@@ -151,7 +150,7 @@ public class RangerBasePlugin {
 	}
 
 	public RangerAuthContext createRangerAuthContext() {
-		return new RangerAuthContext(readOnlyAuthContext);
+		return new RangerAuthContext(currentAuthContext);
 	}
 
 	public RangerAuthContext getCurrentRangerAuthContext() { return currentAuthContext; }
@@ -322,7 +321,7 @@ public class RangerBasePlugin {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("policies are not null. Creating engine from policies");
 					}
-					currentAuthContext = new RangerAuthContext();
+					currentAuthContext = currentAuthContext != null ? currentAuthContext : new RangerAuthContext();
 					newPolicyEngine = new RangerPolicyEngineImpl(appId, policies, policyEngineOptions);
 				} else {
 					if (LOG.isDebugEnabled()) {
@@ -342,7 +341,7 @@ public class RangerBasePlugin {
 								LOG.debug("Failed to apply policyDeltas=" + Arrays.toString(policies.getPolicyDeltas().toArray()) + "), Creating engine from policies");
 								LOG.debug("Creating new engine from servicePolicies:[" + servicePolicies + "]");
 							}
-							currentAuthContext = new RangerAuthContext();
+							currentAuthContext = currentAuthContext != null ? currentAuthContext : new RangerAuthContext();
 							newPolicyEngine = new RangerPolicyEngineImpl(appId, servicePolicies, policyEngineOptions);
 						}
 					} else {
@@ -358,7 +357,6 @@ public class RangerBasePlugin {
 					newPolicyEngine.setTrustedProxyAddresses(trustedProxyAddresses);
 					this.policyEngine = newPolicyEngine;
 					currentAuthContext.setPolicyEngine(this.policyEngine);
-					readOnlyAuthContext = new RangerAuthContext(currentAuthContext);
 
 					contextChanged();
 

@@ -57,13 +57,12 @@ public class RangerAuthContext implements RangerPolicyEngine {
     }
 
     RangerAuthContext(RangerAuthContext other) {
-    	if (other != null) {
-		    this.policyEngine = other.getPolicyEngine();
-		    Map<RangerContextEnricher, Object> localReference = other.requestContextEnrichers;
-		    if (MapUtils.isNotEmpty(localReference)) {
-			    this.requestContextEnrichers = new ConcurrentHashMap<>(localReference);
-		    }
-	    }
+        this.policyEngine = other.getPolicyEngine();
+        Map<RangerContextEnricher, Object> localReference = other.requestContextEnrichers;
+        if (MapUtils.isNotEmpty(localReference)) {
+            this.requestContextEnrichers = new ConcurrentHashMap<>(localReference);
+        }
+
     }
     public RangerPolicyEngine getPolicyEngine() {
         return policyEngine;
