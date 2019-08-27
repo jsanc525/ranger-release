@@ -103,6 +103,12 @@
             <version>${hadoop.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>test</scope>
+        </dependency>
 	<dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-zookeeper</artifactId>
@@ -121,6 +127,11 @@
             <artifactId>hbase-common</artifactId>
             <type>test-jar</type>
             <version>${hbase.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
