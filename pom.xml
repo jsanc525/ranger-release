@@ -199,7 +199,6 @@
         <mockito.version>2.7.22</mockito.version>
         <mysql-connector-java.version>5.1.31</mysql-connector-java.version>
         <netty.version>3.10.5.Final</netty.version>
-        <noggit.version>0.8</noggit.version>
         <owasp-java-html-sanitizer.version>r239</owasp-java-html-sanitizer.version>
         <paranamer.version>2.3</paranamer.version>
         <poi.version>3.17</poi.version>

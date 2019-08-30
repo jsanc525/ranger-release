@@ -54,7 +54,7 @@
 					<include>org.apache.httpcomponents:httpmime:jar:${httpcomponents.httpmime.version}</include>
 					<include>org.apache.httpcomponents:httpclient:jar:${httpcomponents.httpclient.version}</include>
 					<include>org.apache.httpcomponents:httpcore:jar:${httpcomponents.httpcore.version}</include>
-					<include>org.noggit:noggit:jar:${noggit.version}</include>
+					<include>org.noggit:noggit:jar</include>
 					<include>org.apache.solr:solr-solrj</include>
 					<include>org.apache.htrace:htrace-core4:jar:${htrace-core.version}</include>
 					<include>com.fasterxml.woodstox:woodstox-core:jar:${fasterxml.woodstox.version}</include>
