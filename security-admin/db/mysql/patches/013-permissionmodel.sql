@@ -28,16 +28,16 @@ PRIMARY KEY (`id`)
 )ROW_FORMAT=DYNAMIC;
 
 DELIMITER $$
-DROP FUNCTION if exists getXportalUIdByLoginId$$
-CREATE FUNCTION `getXportalUIdByLoginId`(input_val VARCHAR(100)) RETURNS int(11)
-BEGIN DECLARE myid INT; SELECT x_portal_user.id into myid FROM x_portal_user
+DROP PROCEDURE if exists getXportalUIdByLoginId$$
+CREATE PROCEDURE `getXportalUIdByLoginId`(IN input_val VARCHAR(100), OUT myid int(11))
+BEGIN SELECT x_portal_user.id into myid FROM x_portal_user
 WHERE x_portal_user.login_id = input_val;
-RETURN myid;
 END $$
-
 DELIMITER ;
 
-INSERT INTO `x_modules_master` (`create_time`,`update_time`,`added_by_id`,`upd_by_id`,`module`,`url`) VALUES (now(),now(),getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Resource Based Policies',''),(now(),now(),getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Users/Groups',''),(now(),now(),getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Reports',''),(now(),now(),getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Audit',''),(now(),now(),getXportalUIdByLoginId('admin'),getXportalUIdByLoginId('admin'),'Key Manager','');
+CALL getXportalUIdByLoginId('admin', @adminId);
+
+INSERT INTO `x_modules_master` (`create_time`,`update_time`,`added_by_id`,`upd_by_id`,`module`,`url`) VALUES (now(),now(),(SELECT @adminId),(SELECT @adminId),'Resource Based Policies',''),(now(),now(),(SELECT @adminId),(SELECT @adminId),'Users/Groups',''),(now(),now(),(SELECT @adminId),(SELECT @adminId),'Reports',''),(now(),now(),(SELECT @adminId),(SELECT @adminId),'Audit',''),(now(),now(),(SELECT @adminId),(SELECT @adminId),'Key Manager','');
 
 CREATE TABLE `x_user_module_perm` (
 `id` bigint(20) NOT NULL AUTO_INCREMENT,
