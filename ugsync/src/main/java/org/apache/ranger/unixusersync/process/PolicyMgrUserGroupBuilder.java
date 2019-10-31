@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -343,7 +344,6 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 	@Override
 	public void addOrUpdateUser(String userName, List<String> groups) throws Throwable {
 
-		UserGroupInfo ugInfo		  = new UserGroupInfo();
 		XUserInfo user = userName2XUserInfoMap.get(userName);
 
 		if (groups == null) {
@@ -386,6 +386,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 			List<String> addGroups = new ArrayList<String>();
 			List<String> delGroups = new ArrayList<String>();
 			List<String> updateGroups = new ArrayList<String>();
+			Set<String> cumulativeGroups = new HashSet<>();
 			XGroupInfo tempXGroupInfo=null;
 			for(String group : groups) {
 				if (! oldGroups.contains(group)) {
@@ -409,152 +410,129 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 				}
 			}
 
- 			for(String g : addGroups) {
- 				LOG.debug("INFO: addPMXAGroupToUser(" + userName + "," + g + ")" );
- 			}
-            if (!isMockRun) {
-                if (!addGroups.isEmpty()) {
-                    XUserInfo obj = addXUserInfo(userName);
-                    if (obj != null) {
-                        for (String group : addGroups) {
-                            String value = groupMap.get(group);
-                            if (value != null) {
-                                List<String> userRoleList = new ArrayList<String>();
-                                userRoleList.add(value);
-                                if (userMap.containsKey(obj.getName())) {
-                                    List<String> userRole = new ArrayList<String>();
-                                    userRole.add(userMap.get(obj.getName()));
-                                    if (!obj.getUserRoleList().equals(userRole)) {
-                                        obj.setUserRoleList(userRole);
+			for(String g : addGroups) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("INFO: addPMXAGroupToUser(" + userName + "," + g + ")");
+				}
+			}
+			for(String g : delGroups) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("INFO: delPMXAGroupFromUser(" + userName + "," + g + ")");
+				}
+			}
+			for(String g : updateGroups) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("INFO: updatePMXAGroupToUser(" + userName + "," + g + ")");
+				}
+			}
 
-                                    }
-                                } else if (!obj.getUserRoleList().equals(userRoleList)) {
-                                    obj.setUserRoleList(userRoleList);
-                                }
-                            }
-                        }
-                    }
-                    ugInfo.setXuserInfo(obj);
-                    ugInfo.setXgroupInfo(getXGroupInfoList(addGroups));
-                    try {
-                        // If the rest call to ranger admin fails,
-                        // propagate the failure to the caller for retry in next
-                        // sync cycle.
-                        if (addUserGroupInfo(ugInfo) == null) {
-                            String msg = "Failed to add user group info";
-                            LOG.error(msg);
-                            throw new Exception(msg);
-                        }
-                    } catch (Throwable t) {
-                        LOG.error("PolicyMgrUserGroupBuilder.addUserGroupInfo failed for user-group entry: "
-								+ ugInfo.toString() + " with exception: ", t);
-                    }
-                }
-                addXUserGroupInfo(user, addGroups);
-            }
+			if (isMockRun) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("PolicyMgrUserGroupBuilder.addOrUpdateUser(): Mock Run enabled and hence not sending updates to Ranger admin!");
+				}
+				return;
+			}
 
- 			for(String g : delGroups) {
- 				LOG.debug("INFO: delPMXAGroupFromUser(" + userName + "," + g + ")" );
- 			}
-
- 			if (! isMockRun ) {
- 				delXUserGroupInfo(user, delGroups);
+			if (!delGroups.isEmpty()) {
+				delXUserGroupInfo(user, delGroups);
 				//Remove groups from user mapping
 				userName2XUserInfoMap.get(userName).deleteGroups(delGroups);
-				LOG.debug(userName2XUserInfoMap.get(userName).getGroups());
- 			}
-			if (! isMockRun) {
-                if (!updateGroups.isEmpty()) {
-                    XUserInfo obj = addXUserInfo(userName);
-                    if (obj != null) {
-                        for (String group : updateGroups) {
-                            String value = groupMap.get(group);
-                            if (value != null) {
-                                List<String> userRoleList = new ArrayList<String>();
-                                userRoleList.add(value);
-                                if (userMap.containsKey(obj.getName())) {
-                                    List<String> userRole = new ArrayList<String>();
-                                    userRole.add(userMap.get(obj.getName()));
-                                    if (!obj.getUserRoleList().equals(userRole)) {
-                                        obj.setUserRoleList(userRole);
-                                    }
-                                } else if (!obj.getUserRoleList().equals(
-                                        userRoleList)) {
-                                    obj.setUserRoleList(userRoleList);
-                                }
-                            }
-                        }
-                    }
-                    ugInfo.setXuserInfo(obj);
-                    ugInfo.setXgroupInfo(getXGroupInfoList(updateGroups));
-                    try {
-                        // If the rest call to ranger admin fails,
-                        // propagate the failure to the caller for retry in next
-                        // sync cycle.
-                        if (addUserGroupInfo(ugInfo) == null) {
-                            String msg = "Failed to add user group info";
-                            LOG.error(msg);
-                            throw new Exception(msg);
-                        }
-                    } catch (Throwable t) {
-                        LOG.error("PolicyMgrUserGroupBuilder.addUserGroupInfo failed with exception: "
-                                + t.getMessage()
-                                + ", for user-group entry: "
-                                + ugInfo);
-                    }
-                }
-            }
-            if (!isMockRun) {
-                XUserInfo obj = addXUserInfo(userName);
-                boolean roleFlag = false;
-                if (obj != null && updateGroups.isEmpty()
-                        && addGroups.isEmpty()) {
-                    if (userMap.containsKey(obj.getName())) {
-                        List<String> userRole = new ArrayList<String>();
-                        userRole.add(userMap.get(obj.getName()));
-                        if (!obj.getUserRoleList().equals(userRole)) {
-                            obj.setUserRoleList(userRole);
-                            roleFlag = true;
-                        }
-                    } else {
-                        for (String group : groups) {
-                            String value = groupMap.get(group);
-                            if (value != null) {
-                                List<String> userRoleList = new ArrayList<String>();
-                                userRoleList.add(value);
-                                if (!obj.getUserRoleList().equals(userRoleList)) {
-                                    obj.setUserRoleList(userRoleList);
-                                    roleFlag = true;
-                                }
-                            }
-                        }
+				List<String> groupList = userName2XUserInfoMap.get(userName).getGroups();
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("PolicyMgrUserGroupBuilder.addUserGroupInfo(): groups for " + userName + " after delete = " + groupList);
+				}
+			}
 
-                    }
-                    ugInfo.setXuserInfo(obj);
-                    ugInfo.setXgroupInfo(getXGroupInfoList(groups));
-                }
-                if (roleFlag) {
-                    try {
-                        // If the rest call to ranger admin fails,
-                        // propagate the failure to the caller for retry in next
-                        // sync cycle.
-                        if (addUserGroupInfo(ugInfo) == null) {
-                            String msg = "Failed to add user group info";
-                            LOG.error(msg);
-                            throw new Exception(msg);
-                        }
-                    } catch (Throwable t) {
-                        LOG.error("PolicyMgrUserGroupBuilder.addUserGroupInfo failed with exception: "
-                                + t.getMessage()
-                                + ", for user-group entry: "
-                                + ugInfo);
-                    }
-                }
-            }
-			//LOG.info("Adding new groups " + addGroups + " for user = " + userName);
+			if (!delGroups.isEmpty() || !addGroups.isEmpty() || !updateGroups.isEmpty()) {
+				cumulativeGroups = new HashSet<>(user.getGroups());
+				cumulativeGroups.addAll(addGroups);
+				cumulativeGroups.addAll(updateGroups);
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("PolicyMgrUserGroupBuilder.addUserGroupInfo(): cumulative groups for " + userName + " = " + cumulativeGroups);
+				}
+
+				UserGroupInfo ugInfo = new UserGroupInfo();
+				XUserInfo obj = addXUserInfo(userName);
+				Set<String> userRoleList = new HashSet<>();
+				if (userMap.containsKey(userName)) {
+					// Add the user role that is defined in user role assignments
+					userRoleList.add(userMap.get(userName));
+				}
+
+				for (String group : cumulativeGroups) {
+					String value = groupMap.get(group);
+					if (value != null) {
+						userRoleList.add(value);
+					}
+				}
+
+				if (!userRoleList.isEmpty()) {
+					obj.setUserRoleList(new ArrayList<>(userRoleList));
+				}
+
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("PolicyMgrUserGroupBuilder.addUserGroupInfo() user role list for " + userName + " = " + obj.getUserRoleList());
+				}
+
+				ugInfo.setXuserInfo(obj);
+				ugInfo.setXgroupInfo(getXGroupInfoList(new ArrayList<>(cumulativeGroups)));
+				try {
+					// If the rest call to ranger admin fails,
+					// propagate the failure to the caller for retry in next
+					// sync cycle.
+					if (addUserGroupInfo(ugInfo) == null) {
+						String msg = "Failed to add user group info";
+						LOG.error(msg);
+						throw new Exception(msg);
+					}
+				} catch (Throwable t) {
+					LOG.error("PolicyMgrUserGroupBuilder.addUserGroupInfo failed with exception: "
+							+ t.getMessage()
+							+ ", for user-group entry: "
+							+ ugInfo);
+				}
+			}
+
 			if (isStartupFlag) {
+				UserGroupInfo ugInfo = new UserGroupInfo();
+				XUserInfo obj = addXUserInfo(userName);
+				if (obj != null && updateGroups.isEmpty()
+						&& addGroups.isEmpty() && delGroups.isEmpty()) {
+					Set<String> userRoleList = new HashSet<>();
+					if (userMap.containsKey(userName)) {
+						// Add the user role that is defined in user role assignments
+						userRoleList.add(userMap.get(userName));
+					}
+
+					for (String group : groups) {
+						String value = groupMap.get(group);
+						if (value != null) {
+							userRoleList.add(value);
+						}
+					}
+					obj.setUserRoleList(new ArrayList<>(userRoleList));
+					ugInfo.setXuserInfo(obj);
+					ugInfo.setXgroupInfo(getXGroupInfoList(groups));
+					try {
+						// If the rest call to ranger admin fails,
+						// propagate the failure to the caller for retry in next
+						// sync cycle.
+						if (addUserGroupInfo(ugInfo) == null) {
+							String msg = "Failed to add user group info";
+							LOG.error(msg);
+							throw new Exception(msg);
+						}
+					} catch (Throwable t) {
+						LOG.error("PolicyMgrUserGroupBuilder.addUserGroupInfo failed with exception: "
+								+ t.getMessage()
+								+ ", for user-group entry: "
+								+ ugInfo);
+					}
+				}
 				modifiedGroupList.addAll(oldGroups);
-				LOG.debug("Adding user to modified user list: " + userName + ": " + oldGroups);
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Adding user to modified user list: " + userName + ": " + oldGroups);
+				}
 				modifiedUserList.add(userName);
 
 			} else {
@@ -973,6 +951,10 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		xuserInfo.setName(aUserName);
 
 		xuserInfo.setDescription(aUserName + " - add from Unix box");
+
+		List<String> userRole = new ArrayList<>();
+		userRole.add("ROLE_USER");
+		xuserInfo.setUserRoleList(userRole);
 
 		usergroupInfo.setXuserInfo(xuserInfo);
 
