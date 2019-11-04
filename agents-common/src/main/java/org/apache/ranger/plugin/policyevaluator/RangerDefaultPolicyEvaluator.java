@@ -550,8 +550,23 @@ public class RangerDefaultPolicyEvaluator extends RangerAbstractPolicyEvaluator 
 					ret.processPolicyItem(policyItem, RangerPolicyItemEvaluator.POLICY_ITEM_TYPE_ALLOW_EXCEPTIONS, false);
 				}
 			}
+			final boolean isDenyAllElse = Boolean.TRUE.equals(getPolicy().getIsDenyAllElse());
 
-			ret.finalizeAcls();
+			final Set<String> allAccessTypeNames;
+
+			if (isDenyAllElse) {
+				allAccessTypeNames = new HashSet<>();
+				RangerServiceDef serviceDef = getServiceDef();
+				for (RangerAccessTypeDef accessTypeDef :serviceDef.getAccessTypes()) {
+					if (!StringUtils.equalsIgnoreCase(accessTypeDef.getName(), "all")) {
+						allAccessTypeNames.add(accessTypeDef.getName());
+					}
+				}
+			} else {
+				allAccessTypeNames = Collections.EMPTY_SET;
+			}
+
+			ret.finalizeAcls(isDenyAllElse, allAccessTypeNames);
 		}
 
 		RangerPerfTracer.logAlways(perf);
@@ -612,6 +627,8 @@ public class RangerDefaultPolicyEvaluator extends RangerAbstractPolicyEvaluator 
 
 			if (matchedPolicyItem != null) {
 				matchedPolicyItem.updateAccessResult(this, result, matchType);
+			} else if (getPolicy().getIsDenyAllElse() && (getPolicy().getPolicyType() == null || getPolicy().getPolicyType() == RangerPolicy.POLICY_TYPE_ACCESS) && !request.isAccessTypeAny()) {
+				updateAccessResult(result, RangerPolicyResourceMatcher.MatchType.NONE, false, "matched deny-all-else policy");
 			}
 		}
 
@@ -1248,4 +1265,5 @@ public class RangerDefaultPolicyEvaluator extends RangerAbstractPolicyEvaluator 
 
 		return rangerConditionEvaluators;
 	}
+
 }
