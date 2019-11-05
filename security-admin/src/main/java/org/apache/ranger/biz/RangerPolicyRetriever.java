@@ -39,6 +39,7 @@ import org.apache.ranger.entity.XXPolicyLabelMap;
 import org.apache.ranger.entity.XXPortalUser;
 import org.apache.ranger.entity.XXSecurityZone;
 import org.apache.ranger.entity.XXService;
+import org.apache.ranger.entity.XXServiceDef;
 import org.apache.ranger.plugin.model.RangerPolicy;
 import org.apache.ranger.plugin.model.RangerPolicy.RangerDataMaskPolicyItem;
 import org.apache.ranger.plugin.model.RangerPolicy.RangerPolicyItem;
@@ -468,6 +469,7 @@ public class RangerPolicyRetriever {
 		final XXService              service;
 		final ListIterator<XXPolicy> iterPolicy;
 		final ListIterator<XXPolicyLabelMap> iterPolicyLabels;
+		final XXServiceDef serviceDef;
 
 		RetrieverContext(XXService xService) {
 			if (xService != null) {
@@ -481,10 +483,12 @@ public class RangerPolicyRetriever {
 				lookupCache.setConditionNameMapping(daoMgr.getXXPolicyRefCondition().findUpdatedConditionNamesByService(serviceId));
 
 				this.service    = xService;
+				this.serviceDef = daoMgr.getXXServiceDef().getById(xService.getType());
 				this.iterPolicy = daoMgr.getXXPolicy().findByServiceId(serviceId).listIterator();
 				this.iterPolicyLabels = daoMgr.getXXPolicyLabelMap().findByServiceId(serviceId).listIterator();
 			} else {
 				this.service    = null;
+				this.serviceDef = null;
 				this.iterPolicy = null;
 				this.iterPolicyLabels = null;
 			}
@@ -501,6 +505,7 @@ public class RangerPolicyRetriever {
 			lookupCache.setConditionNameMapping(daoMgr.getXXPolicyRefCondition().findUpdatedConditionNamesByPolicy(policyId));
 
 			this.service    = xService;
+			this.serviceDef = daoMgr.getXXServiceDef().getById(xService.getType());
 			this.iterPolicy = asList(xPolicy).listIterator();
 			this.iterPolicyLabels = daoMgr.getXXPolicyLabelMap().findByPolicyId(policyId).listIterator();
 		}
@@ -526,7 +531,7 @@ public class RangerPolicyRetriever {
 						ret.setVersion(xPolicy.getVersion());
 						ret.setPolicyType(xPolicy.getPolicyType() == null ? RangerPolicy.POLICY_TYPE_ACCESS : xPolicy.getPolicyType());
 						ret.setService(service.getName());
-						ret.setServiceType(service.getType().toString());
+						ret.setServiceType(serviceDef.getName());
 						ret.setZoneName(lookupCache.getSecurityZoneName(xPolicy.getZoneId()));
 						updatePolicyReferenceFields(ret);
 						getPolicyLabels(ret);

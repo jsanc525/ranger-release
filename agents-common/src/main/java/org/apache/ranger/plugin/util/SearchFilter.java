@@ -77,6 +77,8 @@ public class SearchFilter {
 	public static final String PLUGIN_APP_TYPE           = "pluginAppType";
 	public static final String PLUGIN_ENTITY_TYPE        = "pluginEntityType";
 	public static final String PLUGIN_IP_ADDRESS         = "pluginIpAddress";
+	public static final String FETCH_ZONE_UNZONE_POLICIES        = "fetchZoneAndUnzonePolicies";
+	public static final String FETCH_TAG_POLICIES        = "fetchTagPolicies";
 
 	private Map<String, String> params;
 	private int                 startIndex;
