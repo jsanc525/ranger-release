@@ -1,3 +1,15 @@
+BUG-122406 : Unix user doesn't get 'Admin' role when set through assignment rules
+BUG-122275 : Backport Knox Proxy related changes to HDP 3.1.5
+BUG-121921 : Backport Import / Export API improvements to support DLM usecases in HDP-3.1.5
+BUG-121945 : Backport Deny-All-Else Capability to HDP 3.1.5
+BUG-122189 : Backport RANGER-2597 to HDP 3.1.5
+BUG-122206 : Backport RANGER-2531 and RANGER-2552 to HDP 3.1.5
+QE-22903 remove transitive noggit dependency version from assambly plugins
+BUG-122023 : Ranger setup fails with mariadb/mysql when binary logging is enabled
+BUG-122135: Update jackson and jackson-databind version to 2.10.0 (for tagsync)
+BUG-122135: Update jackson and jackson-databind version to 2.10.0
+BUG-122136: Upgrade commons-beanutils to 1.9.4
+BUG-121970 Fix Ranger build for HBase 2.1
 BUG-121315: include missing jar for KMS webapp 
 RANGER-2521: Masking policies not picked from the zone of the accessed resource 
 BUG-121221: RANGER-2513: Unable to delete user if he has references in new ref tables 
