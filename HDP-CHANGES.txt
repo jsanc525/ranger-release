@@ -1,3 +1,4 @@
+BUG-122550: RANGER-2637, RANGER-2651: Performance improvements
 BUG-122406 : Unix user doesn't get 'Admin' role when set through assignment rules
 BUG-122275 : Backport Knox Proxy related changes to HDP 3.1.5
 BUG-121921 : Backport Import / Export API improvements to support DLM usecases in HDP-3.1.5
