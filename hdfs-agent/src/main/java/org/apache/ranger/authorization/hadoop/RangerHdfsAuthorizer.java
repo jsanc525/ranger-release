@@ -489,9 +489,11 @@ public class RangerHdfsAuthorizer extends INodeAttributeProvider {
 
 			RangerAccessResult result = plugin.isAccessAllowed(request, null);
 
-			if (result != null && result.getIsAccessDetermined() && !result.getIsAllowed()) {
+			if (result == null || !result.getIsAccessDetermined()) {
+				ret = AuthzStatus.NOT_DETERMINED;
+			} else if(! result.getIsAllowed()) { // explicit deny
 				ret = AuthzStatus.DENY;
-			} else {
+			} else { // allowed
 				ret = AuthzStatus.ALLOW;
 			}
 
