@@ -180,8 +180,8 @@ public class EmbeddedServer {
 		server.getHost().getPipeline().addValve(valve);
 
 		ErrorReportValve errorReportValve = new ErrorReportValve();
-		boolean showServerinfo = Boolean.valueOf(EmbeddedServerUtil.getConfig("ranger.valve.errorreportvalve.showserverinfo", "true"));
-		boolean showReport = Boolean.valueOf(EmbeddedServerUtil.getConfig("ranger.valve.errorreportvalve.showreport", "true"));
+		boolean showServerinfo = Boolean.valueOf(getConfig("ranger.valve.errorreportvalve.showserverinfo", "true"));
+		boolean showReport = Boolean.valueOf(getConfig("ranger.valve.errorreportvalve.showreport", "true"));
 		errorReportValve.setShowServerInfo(showServerinfo);
 		errorReportValve.setShowReport(showReport);
 		server.getHost().getPipeline().addValve(errorReportValve);
