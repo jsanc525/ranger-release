@@ -33,6 +33,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.AccessLogValve;
+import org.apache.catalina.valves.ErrorReportValve;
 import org.apache.hadoop.security.SecureClientLogin;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.alias.CredentialProvider;
@@ -177,7 +178,14 @@ public class EmbeddedServer {
 		valve.setPattern(logPattern);	
 				
 		server.getHost().getPipeline().addValve(valve);
-		
+
+		ErrorReportValve errorReportValve = new ErrorReportValve();
+		boolean showServerinfo = Boolean.valueOf(EmbeddedServerUtil.getConfig("ranger.valve.errorreportvalve.showserverinfo", "true"));
+		boolean showReport = Boolean.valueOf(EmbeddedServerUtil.getConfig("ranger.valve.errorreportvalve.showreport", "true"));
+		errorReportValve.setShowServerInfo(showServerinfo);
+		errorReportValve.setShowReport(showReport);
+		server.getHost().getPipeline().addValve(errorReportValve);
+
 		try {
 			String webapp_dir = getConfig("xa.webapp.dir");
 			if (webapp_dir == null || webapp_dir.trim().isEmpty()) {
