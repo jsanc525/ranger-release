@@ -517,7 +517,7 @@ public class RangerBasePlugin {
 			}
 
 			if (policyEngine != null) {
-				request.setZoneName(policyEngine.getMatchedZoneName(request));
+				request.setZoneName(policyEngine.getUniquelyMatchedZoneName(request));
 			}
 
 			admin.grantAccess(request);
@@ -547,7 +547,7 @@ public class RangerBasePlugin {
 			}
 
 			if (policyEngine != null) {
-				request.setZoneName(policyEngine.getMatchedZoneName(request));
+				request.setZoneName(policyEngine.getUniquelyMatchedZoneName(request));
 			}
 
 			admin.revokeAccess(request);

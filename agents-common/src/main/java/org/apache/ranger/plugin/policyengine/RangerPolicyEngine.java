@@ -65,7 +65,7 @@ public interface RangerPolicyEngine {
 
 	RangerResourceACLs getResourceACLs(RangerAccessRequest request);
 
-	String getMatchedZoneName(GrantRevokeRequest grantRevokeRequest);
+	String getUniquelyMatchedZoneName(GrantRevokeRequest grantRevokeRequest);
 
 	boolean preCleanup();
 
@@ -73,13 +73,13 @@ public interface RangerPolicyEngine {
 
 	void reorderPolicyEvaluators();
 
-    boolean isAccessAllowed(RangerAccessResource resource, String user, Set<String> userGroups, String accessType);
+    boolean isAccessAllowed(RangerAccessResource resource, String zoneName, String user, Set<String> userGroups, String accessType);
 
 	boolean isAccessAllowed(Map<String, RangerPolicyResource> resources, String user, Set<String> userGroups, String accessType);
 
 	boolean isAccessAllowed(RangerPolicy policy, String user, Set<String> userGroups, String accessType);
 
-	List<RangerPolicy> getExactMatchPolicies(RangerAccessResource resource, Map<String, Object> evalContext);
+	List<RangerPolicy> getExactMatchPolicies(RangerAccessResource resource, String zoneName, Map<String, Object> evalContext);
 
 	List<RangerPolicy> getExactMatchPolicies(RangerPolicy policy, Map<String, Object> evalContext);
 

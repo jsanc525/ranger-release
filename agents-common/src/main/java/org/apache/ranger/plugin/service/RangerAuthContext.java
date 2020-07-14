@@ -192,8 +192,8 @@ public class RangerAuthContext implements RangerPolicyEngine {
 	}
 
 	@Override
-	public String getMatchedZoneName(GrantRevokeRequest grantRevokeRequest) {
-		return policyEngine.getMatchedZoneName(grantRevokeRequest);
+	public String getUniquelyMatchedZoneName(GrantRevokeRequest grantRevokeRequest) {
+		return policyEngine.getUniquelyMatchedZoneName(grantRevokeRequest);
 	}
 
     @Override
@@ -231,7 +231,7 @@ public class RangerAuthContext implements RangerPolicyEngine {
 
     /* The following APIs are used only by ranger-admin. Providing dummy implementation */
     @Override
-    public boolean isAccessAllowed(RangerAccessResource resource, String user, Set<String> userGroups, String accessType) {
+    public boolean isAccessAllowed(RangerAccessResource resource, String zoneName, String user, Set<String> userGroups, String accessType) {
         return false;
     }
 
@@ -251,7 +251,7 @@ public class RangerAuthContext implements RangerPolicyEngine {
     }
 
     @Override
-    public List<RangerPolicy> getExactMatchPolicies(RangerAccessResource resource, Map<String, Object> evalContext) {
+    public List<RangerPolicy> getExactMatchPolicies(RangerAccessResource resource, String zoneName, Map<String, Object> evalContext) {
         return null;
     }
 
