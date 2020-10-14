@@ -4361,7 +4361,6 @@ public class ServiceDBStore extends AbstractServiceStore {
 			searchFilter.removeParam("user");
 			Set<String> groupNames = daoMgr.getXXGroupUser().findGroupNamesByUserName(userName);
 			if (!CollectionUtils.isEmpty(groupNames)) {
-				Set<Long> processedServicesForGroup=new HashSet<Long>();
 				List<XXPolicy> xPolList2;
 				for (String groupName : groupNames) {
 					searchFilter.setParam("group", groupName);
