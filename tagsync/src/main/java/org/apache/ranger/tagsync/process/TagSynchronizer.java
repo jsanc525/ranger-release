@@ -106,7 +106,7 @@ public class TagSynchronizer {
 
 		if (ret) {
 			LOG.info("Initializing TAG source and sink");
-
+                        ret = false;
 			tagSink = initializeTagSink(properties);
 
 			if (tagSink != null) {
@@ -353,7 +353,7 @@ public class TagSynchronizer {
 		return tagSource;
 	}
 
-	private static boolean initializeKerberosIdentity(Properties props) {
+	public static boolean initializeKerberosIdentity(Properties props) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> TagSynchronizer.initializeKerberosIdentity()");
 		}
