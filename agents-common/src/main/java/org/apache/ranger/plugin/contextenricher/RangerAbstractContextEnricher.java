@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ranger.plugin.model.RangerServiceDef;
 import org.apache.ranger.plugin.model.RangerServiceDef.RangerContextEnricherDef;
 import org.apache.ranger.plugin.policyengine.RangerAccessRequest;
+import org.apache.ranger.plugin.policyengine.RangerPolicyEngineOptions;
 import org.apache.ranger.plugin.service.RangerAuthContext;
 import org.apache.ranger.plugin.service.RangerBasePlugin;
 
@@ -45,6 +46,7 @@ public abstract class RangerAbstractContextEnricher implements RangerContextEnri
 	protected String serviceName;
 	protected String appId;
 	protected RangerServiceDef serviceDef;
+	protected RangerPolicyEngineOptions options = new RangerPolicyEngineOptions();
 
 	@Override
 	public void setEnricherDef(RangerContextEnricherDef enricherDef) {
@@ -143,6 +145,14 @@ public abstract class RangerAbstractContextEnricher implements RangerContextEnri
 
 	public String getAppId() {
 		return appId;
+	}
+
+	public RangerPolicyEngineOptions getPolicyEngineOptions() {
+		return options;
+	}
+
+	final public void setPolicyEngineOptions(RangerPolicyEngineOptions options) {
+		this.options = options;
 	}
 
 	public String getOption(String name) {

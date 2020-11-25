@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ranger.authorization.hadoop.config.RangerConfiguration;
+import org.apache.ranger.plugin.contextenricher.RangerAbstractContextEnricher;
 import org.apache.ranger.plugin.contextenricher.RangerContextEnricher;
 import org.apache.ranger.plugin.contextenricher.RangerTagEnricher;
 import org.apache.ranger.plugin.contextenricher.RangerTagForEval;
@@ -984,7 +985,7 @@ class RangerPolicyRepository {
                         contextEnricherDef = new RangerServiceDef.RangerContextEnricherDef(enricherDef.getItemId(), enricherDef.getName(), "org.apache.ranger.common.RangerAdminTagEnricher", null);
                     }
 
-                    RangerContextEnricher contextEnricher = buildContextEnricher(contextEnricherDef);
+                    RangerContextEnricher contextEnricher = buildContextEnricher(contextEnricherDef, options);
 
                     if (contextEnricher != null) {
                         contextEnrichers.add(contextEnricher);
@@ -995,7 +996,7 @@ class RangerPolicyRepository {
         return contextEnrichers;
     }
 
-    private RangerContextEnricher buildContextEnricher(RangerServiceDef.RangerContextEnricherDef enricherDef) {
+    private RangerContextEnricher buildContextEnricher(RangerServiceDef.RangerContextEnricherDef enricherDef, RangerPolicyEngineOptions  options) {
         if(LOG.isDebugEnabled()) {
             LOG.debug("==> RangerPolicyRepository.buildContextEnricher(" + enricherDef + ")");
         }
@@ -1022,11 +1023,15 @@ class RangerPolicyRepository {
             }
         }
 
-        if(ret != null) {
+        if (ret != null) {
             ret.setEnricherDef(enricherDef);
             ret.setServiceName(componentServiceName);
             ret.setServiceDef(componentServiceDef);
             ret.setAppId(appId);
+            if (ret instanceof RangerAbstractContextEnricher) {
+                RangerAbstractContextEnricher abstractContextEnricher = (RangerAbstractContextEnricher) ret;
+                abstractContextEnricher.setPolicyEngineOptions(options);
+            }
             ret.init();
         }
 
